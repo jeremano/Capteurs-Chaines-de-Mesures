@@ -120,9 +120,11 @@ int main(void)
     BSP_LCD_Clear(LCD_COLOR_WHITE);
     */
     // Go through all possible i2c addresses
-      for (uint8_t i = 0; i < 255; i++) {
+      printf("-- Test des adresses disponibles --\r\n");
 
-    	  if (HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i), 3, 5) == HAL_OK) {
+    	for (uint8_t i = 0; i < 128; i++) {
+
+    	  if (HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 3, 5) == HAL_OK) {
     		  // We got an ack
     		  printf("%2x ", i);
     	  } else {
@@ -134,6 +136,20 @@ int main(void)
       }
 
       printf("\n\r");
+
+      printf("-- Test de l'identité du capteur MPU-9250 --\r\n");
+      uint8_t data[48];
+      data[0]=0x75;
+      printf("Registre d'identification : %x\r\n",data[0]);
+      HAL_I2C_Master_Transmit(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY);
+      HAL_I2C_Master_Receive(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY);
+      printf("Valeur reçu : %x\r\n",data[0]);
+      if (data[0]!=0x71){
+    	  printf("Error !\r\n");
+      }
+      else{
+    	  printf("Ok !");
+      }
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
