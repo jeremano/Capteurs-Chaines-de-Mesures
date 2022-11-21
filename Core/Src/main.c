@@ -20,6 +20,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "i2c.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -73,7 +75,11 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	int __io_putchar(int ch) {
+		HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+	return ch;
+	}
+	printf("Test\r\n");
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -94,6 +100,9 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_I2C1_Init();
+  MX_USART1_UART_Init();
+  MX_LPUART1_UART_Init();
   /* USER CODE BEGIN 2 */
   	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET);
     HAL_Delay(2000);
@@ -111,6 +120,21 @@ int main(void)
     HAL_Delay(1000);
     BSP_LCD_Clear(LCD_COLOR_WHITE);
     */
+    // Go through all possible i2c addresses
+      for (uint8_t i = 0; i < 128; i++) {
+
+    	  if (HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 3, 5) == HAL_OK) {
+    		  // We got an ack
+    		  printf("%2x ", i);
+    	  } else {
+    		  printf("-- ");
+    	  }
+
+    	  if (i > 0 && (i + 1) % 16 == 0) printf("\n");
+
+      }
+
+      printf("\n");
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
