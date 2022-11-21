@@ -6,22 +6,29 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2022 STMicroelectronics.
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.</center></h2>
   *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
+  * This software component is licensed by ST under Ultimate Liberty license
+  * SLA0044, the "License"; You may not use this file except in compliance with
+  * the License. You may obtain a copy of the License at:
+  *                             www.st.com/SLA0044
   *
   ******************************************************************************
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+//#include "../../Drivers/BSP/inc/stm32746g_discovery_lcd.h"
+#include "stdio.h"
+#include <math.h>
+#include "Const.h"
 
 /* USER CODE END Includes */
 
@@ -43,10 +50,13 @@
 
 /* USER CODE BEGIN PV */
 
+char mess[30];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -85,9 +95,33 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
+  	HAL_GPIO_WritePin(GPIOG,GPIO_PIN_13,GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOG,GPIO_PIN_14,GPIO_PIN_SET);
+    HAL_Delay(1000);
+    HAL_GPIO_WritePin(GPIOG,GPIO_PIN_13,GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOG,GPIO_PIN_14,GPIO_PIN_RESET);
 
+    /*Test écran LCD*/
+    /*
+    BSP_LCD_DisplayStringAt(0, LINE(1), (uint8_t *)"CAPTEURS", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, LINE(2), (uint8_t *)"TP", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, LINE(3), (uint8_t *)"2019/2020", CENTER_MODE);
+    BSP_LCD_DisplayStringAt(0, LINE(4), (uint8_t *)"MSC !", CENTER_MODE);
+
+    sprintf(mess,"Pi = %1.4f",PI);
+    BSP_LCD_DisplayStringAt(0, LINE(5), (uint8_t *)mess,CENTER_MODE);
+    HAL_Delay(1000);
+    BSP_LCD_Clear(LCD_COLOR_WHITE);
+    */
   /* USER CODE END 2 */
 
+  /* Call init function for freertos objects (in freertos.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -95,7 +129,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  pro
   }
   /* USER CODE END 3 */
 }
@@ -158,10 +191,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -177,7 +207,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
