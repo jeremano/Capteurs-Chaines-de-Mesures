@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   0001619a  00000000  00000000  0005afe4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000c414b  00000000  00000000  0007117e  2**0
+ 18 .debug_str    000c4194  00000000  00000000  0007117e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  001352c9  2**0
+ 19 .comment      00000050  00000000  00000000  00135312  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00005080  00000000  00000000  0013531c  2**2
+ 20 .debug_frame  00005080  00000000  00000000  00135364  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1805,109 +1805,49 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
  8000cf0:	40021000 	.word	0x40021000
 
 08000cf4 <Reset_Handler>:
-
-    .section	.text.Reset_Handler
-	.weak	Reset_Handler
-	.type	Reset_Handler, %function
-Reset_Handler:
-  ldr   r0, =_estack
  8000cf4:	480d      	ldr	r0, [pc, #52]	; (8000d2c <LoopForever+0x2>)
-  mov   sp, r0          /* set stack pointer */
  8000cf6:	4685      	mov	sp, r0
-
-/* Copy the data segment initializers from flash to SRAM */
-  ldr r0, =_sdata
  8000cf8:	480d      	ldr	r0, [pc, #52]	; (8000d30 <LoopForever+0x6>)
-  ldr r1, =_edata
  8000cfa:	490e      	ldr	r1, [pc, #56]	; (8000d34 <LoopForever+0xa>)
-  ldr r2, =_sidata
  8000cfc:	4a0e      	ldr	r2, [pc, #56]	; (8000d38 <LoopForever+0xe>)
-  movs r3, #0
  8000cfe:	2300      	movs	r3, #0
-  b	LoopCopyDataInit
  8000d00:	e002      	b.n	8000d08 <LoopCopyDataInit>
 
 08000d02 <CopyDataInit>:
-
-CopyDataInit:
-  ldr r4, [r2, r3]
  8000d02:	58d4      	ldr	r4, [r2, r3]
-  str r4, [r0, r3]
  8000d04:	50c4      	str	r4, [r0, r3]
-  adds r3, r3, #4
  8000d06:	3304      	adds	r3, #4
 
 08000d08 <LoopCopyDataInit>:
-
-LoopCopyDataInit:
-  adds r4, r0, r3
  8000d08:	18c4      	adds	r4, r0, r3
-  cmp r4, r1
  8000d0a:	428c      	cmp	r4, r1
-  bcc CopyDataInit
  8000d0c:	d3f9      	bcc.n	8000d02 <CopyDataInit>
-  
-/* Zero fill the bss segment. */
-  ldr r2, =_sbss
  8000d0e:	4a0b      	ldr	r2, [pc, #44]	; (8000d3c <LoopForever+0x12>)
-  ldr r4, =_ebss
  8000d10:	4c0b      	ldr	r4, [pc, #44]	; (8000d40 <LoopForever+0x16>)
-  movs r3, #0
  8000d12:	2300      	movs	r3, #0
-  b LoopFillZerobss
  8000d14:	e001      	b.n	8000d1a <LoopFillZerobss>
 
 08000d16 <FillZerobss>:
-
-FillZerobss:
-  str  r3, [r2]
  8000d16:	6013      	str	r3, [r2, #0]
-  adds r2, r2, #4
  8000d18:	3204      	adds	r2, #4
 
 08000d1a <LoopFillZerobss>:
-
-LoopFillZerobss:
-  cmp r2, r4
  8000d1a:	42a2      	cmp	r2, r4
-  bcc FillZerobss
  8000d1c:	d3fb      	bcc.n	8000d16 <FillZerobss>
-
-/* Call the clock system intitialization function.*/
-    bl  SystemInit
  8000d1e:	f7ff ff33 	bl	8000b88 <SystemInit>
-/* Call static constructors */
-    bl __libc_init_array
  8000d22:	f003 fd81 	bl	8004828 <__libc_init_array>
-/* Call the application's entry point.*/
-	bl	main
  8000d26:	f7ff fd93 	bl	8000850 <main>
 
 08000d2a <LoopForever>:
-
-LoopForever:
-    b LoopForever
  8000d2a:	e7fe      	b.n	8000d2a <LoopForever>
-  ldr   r0, =_estack
  8000d2c:	20008000 	.word	0x20008000
-  ldr r0, =_sdata
  8000d30:	20000000 	.word	0x20000000
-  ldr r1, =_edata
  8000d34:	20000074 	.word	0x20000074
-  ldr r2, =_sidata
  8000d38:	080059c8 	.word	0x080059c8
-  ldr r2, =_sbss
  8000d3c:	20000074 	.word	0x20000074
-  ldr r4, =_ebss
  8000d40:	20000edc 	.word	0x20000edc
 
 08000d44 <ADC1_2_IRQHandler>:
- * @retval : None
-*/
-    .section	.text.Default_Handler,"ax",%progbits
-Default_Handler:
-Infinite_Loop:
-	b	Infinite_Loop
  8000d44:	e7fe      	b.n	8000d44 <ADC1_2_IRQHandler>
 
 08000d46 <HAL_Init>:
@@ -8637,36 +8577,22 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  80034c4:	08005918 	.word	0x08005918
 
 080034c8 <makeFreeRtosPriority>:
-
-extern void xPortSysTickHandler(void);
-
-/* Convert from CMSIS type osPriority to FreeRTOS priority number */
-static unsigned portBASE_TYPE makeFreeRtosPriority (osPriority priority)
-{
  80034c8:	b480      	push	{r7}
  80034ca:	b085      	sub	sp, #20
  80034cc:	af00      	add	r7, sp, #0
  80034ce:	4603      	mov	r3, r0
  80034d0:	80fb      	strh	r3, [r7, #6]
-  unsigned portBASE_TYPE fpriority = tskIDLE_PRIORITY;
  80034d2:	2300      	movs	r3, #0
  80034d4:	60fb      	str	r3, [r7, #12]
-  
-  if (priority != osPriorityError) {
  80034d6:	f9b7 3006 	ldrsh.w	r3, [r7, #6]
  80034da:	2b84      	cmp	r3, #132	; 0x84
  80034dc:	d005      	beq.n	80034ea <makeFreeRtosPriority+0x22>
-    fpriority += (priority - osPriorityIdle);
  80034de:	f9b7 2006 	ldrsh.w	r2, [r7, #6]
  80034e2:	68fb      	ldr	r3, [r7, #12]
  80034e4:	4413      	add	r3, r2
  80034e6:	3303      	adds	r3, #3
  80034e8:	60fb      	str	r3, [r7, #12]
-  }
-  
-  return fpriority;
  80034ea:	68fb      	ldr	r3, [r7, #12]
-}
  80034ec:	4618      	mov	r0, r3
  80034ee:	3714      	adds	r7, #20
  80034f0:	46bd      	mov	sp, r7
@@ -8674,49 +8600,25 @@ static unsigned portBASE_TYPE makeFreeRtosPriority (osPriority priority)
  80034f6:	4770      	bx	lr
 
 080034f8 <osKernelStart>:
-* @param  argument      pointer that is passed to the thread function as start argument.
-* @retval status code that indicates the execution status of the function
-* @note   MUST REMAIN UNCHANGED: \b osKernelStart shall be consistent in every CMSIS-RTOS.
-*/
-osStatus osKernelStart (void)
-{
  80034f8:	b580      	push	{r7, lr}
  80034fa:	af00      	add	r7, sp, #0
-  vTaskStartScheduler();
  80034fc:	f000 fa58 	bl	80039b0 <vTaskStartScheduler>
-  
-  return osOK;
  8003500:	2300      	movs	r3, #0
-}
  8003502:	4618      	mov	r0, r3
  8003504:	bd80      	pop	{r7, pc}
 
 08003506 <osThreadCreate>:
-* @param  argument      pointer that is passed to the thread function as start argument.
-* @retval thread ID for reference by other functions or NULL in case of error.
-* @note   MUST REMAIN UNCHANGED: \b osThreadCreate shall be consistent in every CMSIS-RTOS.
-*/
-osThreadId osThreadCreate (const osThreadDef_t *thread_def, void *argument)
-{
  8003506:	b5f0      	push	{r4, r5, r6, r7, lr}
  8003508:	b087      	sub	sp, #28
  800350a:	af02      	add	r7, sp, #8
  800350c:	6078      	str	r0, [r7, #4]
  800350e:	6039      	str	r1, [r7, #0]
-
-    handle = xTaskCreateStatic((TaskFunction_t)thread_def->pthread,(const portCHAR *)thread_def->name,
-              thread_def->stacksize, argument, makeFreeRtosPriority(thread_def->tpriority),
-              thread_def->buffer, thread_def->controlblock);
-#else
-  if (xTaskCreate((TaskFunction_t)thread_def->pthread,(const portCHAR *)thread_def->name,
  8003510:	687b      	ldr	r3, [r7, #4]
  8003512:	685c      	ldr	r4, [r3, #4]
  8003514:	687b      	ldr	r3, [r7, #4]
  8003516:	681d      	ldr	r5, [r3, #0]
-                   thread_def->stacksize, argument, makeFreeRtosPriority(thread_def->tpriority),
  8003518:	687b      	ldr	r3, [r7, #4]
  800351a:	691b      	ldr	r3, [r3, #16]
-  if (xTaskCreate((TaskFunction_t)thread_def->pthread,(const portCHAR *)thread_def->name,
  800351c:	b29e      	uxth	r6, r3
  800351e:	687b      	ldr	r3, [r7, #4]
  8003520:	f9b3 3008 	ldrsh.w	r3, [r3, #8]
@@ -8734,38 +8636,21 @@ osThreadId osThreadCreate (const osThreadDef_t *thread_def, void *argument)
  8003540:	4603      	mov	r3, r0
  8003542:	2b01      	cmp	r3, #1
  8003544:	d001      	beq.n	800354a <osThreadCreate+0x44>
-                   &handle) != pdPASS)  {
-    return NULL;
  8003546:	2300      	movs	r3, #0
  8003548:	e000      	b.n	800354c <osThreadCreate+0x46>
-  }     
-#endif
-  
-  return handle;
  800354a:	68fb      	ldr	r3, [r7, #12]
-}
  800354c:	4618      	mov	r0, r3
  800354e:	3714      	adds	r7, #20
  8003550:	46bd      	mov	sp, r7
  8003552:	bdf0      	pop	{r4, r5, r6, r7, pc}
 
 08003554 <osDelay>:
-* @brief   Wait for Timeout (Time Delay)
-* @param   millisec      time delay value
-* @retval  status code that indicates the execution status of the function.
-*/
-osStatus osDelay (uint32_t millisec)
-{
  8003554:	b580      	push	{r7, lr}
  8003556:	b084      	sub	sp, #16
  8003558:	af00      	add	r7, sp, #0
  800355a:	6078      	str	r0, [r7, #4]
-#if INCLUDE_vTaskDelay
-  TickType_t ticks = millisec / portTICK_PERIOD_MS;
  800355c:	687b      	ldr	r3, [r7, #4]
  800355e:	60fb      	str	r3, [r7, #12]
-  
-  vTaskDelay(ticks ? ticks : 1);          /* Minimum delay = 1 tick */
  8003560:	68fb      	ldr	r3, [r7, #12]
  8003562:	2b00      	cmp	r3, #0
  8003564:	d001      	beq.n	800356a <osDelay+0x16>
@@ -8774,70 +8659,35 @@ osStatus osDelay (uint32_t millisec)
  800356a:	2301      	movs	r3, #1
  800356c:	4618      	mov	r0, r3
  800356e:	f000 f9eb 	bl	8003948 <vTaskDelay>
-  
-  return osOK;
  8003572:	2300      	movs	r3, #0
-#else
-  (void) millisec;
-  
-  return osErrorResource;
-#endif
-}
  8003574:	4618      	mov	r0, r3
  8003576:	3710      	adds	r7, #16
  8003578:	46bd      	mov	sp, r7
  800357a:	bd80      	pop	{r7, pc}
 
 0800357c <vListInitialise>:
-/*-----------------------------------------------------------
- * PUBLIC LIST API documented in list.h
- *----------------------------------------------------------*/
-
-void vListInitialise( List_t * const pxList )
-{
  800357c:	b480      	push	{r7}
  800357e:	b083      	sub	sp, #12
  8003580:	af00      	add	r7, sp, #0
  8003582:	6078      	str	r0, [r7, #4]
-	/* The list structure contains a list item which is used to mark the
-	end of the list.  To initialise the list the list end is inserted
-	as the only list entry. */
-	pxList->pxIndex = ( ListItem_t * ) &( pxList->xListEnd );			/*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
  8003584:	687b      	ldr	r3, [r7, #4]
  8003586:	f103 0208 	add.w	r2, r3, #8
  800358a:	687b      	ldr	r3, [r7, #4]
  800358c:	605a      	str	r2, [r3, #4]
-
-	/* The list end value is the highest possible value in the list to
-	ensure it remains at the end of the list. */
-	pxList->xListEnd.xItemValue = portMAX_DELAY;
  800358e:	687b      	ldr	r3, [r7, #4]
  8003590:	f04f 32ff 	mov.w	r2, #4294967295
  8003594:	609a      	str	r2, [r3, #8]
-
-	/* The list end next and previous pointers point to itself so we know
-	when the list is empty. */
-	pxList->xListEnd.pxNext = ( ListItem_t * ) &( pxList->xListEnd );	/*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
  8003596:	687b      	ldr	r3, [r7, #4]
  8003598:	f103 0208 	add.w	r2, r3, #8
  800359c:	687b      	ldr	r3, [r7, #4]
  800359e:	60da      	str	r2, [r3, #12]
-	pxList->xListEnd.pxPrevious = ( ListItem_t * ) &( pxList->xListEnd );/*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. */
  80035a0:	687b      	ldr	r3, [r7, #4]
  80035a2:	f103 0208 	add.w	r2, r3, #8
  80035a6:	687b      	ldr	r3, [r7, #4]
  80035a8:	611a      	str	r2, [r3, #16]
-
-	pxList->uxNumberOfItems = ( UBaseType_t ) 0U;
  80035aa:	687b      	ldr	r3, [r7, #4]
  80035ac:	2200      	movs	r2, #0
  80035ae:	601a      	str	r2, [r3, #0]
-
-	/* Write known values into the list if
-	configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES is set to 1. */
-	listSET_LIST_INTEGRITY_CHECK_1_VALUE( pxList );
-	listSET_LIST_INTEGRITY_CHECK_2_VALUE( pxList );
-}
  80035b0:	bf00      	nop
  80035b2:	370c      	adds	r7, #12
  80035b4:	46bd      	mov	sp, r7
@@ -8845,25 +8695,13 @@ void vListInitialise( List_t * const pxList )
  80035ba:	4770      	bx	lr
 
 080035bc <vListInitialiseItem>:
-/*-----------------------------------------------------------*/
-
-void vListInitialiseItem( ListItem_t * const pxItem )
-{
  80035bc:	b480      	push	{r7}
  80035be:	b083      	sub	sp, #12
  80035c0:	af00      	add	r7, sp, #0
  80035c2:	6078      	str	r0, [r7, #4]
-	/* Make sure the list item is not recorded as being on a list. */
-	pxItem->pxContainer = NULL;
  80035c4:	687b      	ldr	r3, [r7, #4]
  80035c6:	2200      	movs	r2, #0
  80035c8:	611a      	str	r2, [r3, #16]
-
-	/* Write known values into the list item if
-	configUSE_LIST_DATA_INTEGRITY_CHECK_BYTES is set to 1. */
-	listSET_FIRST_LIST_ITEM_INTEGRITY_CHECK_VALUE( pxItem );
-	listSET_SECOND_LIST_ITEM_INTEGRITY_CHECK_VALUE( pxItem );
-}
  80035ca:	bf00      	nop
  80035cc:	370c      	adds	r7, #12
  80035ce:	46bd      	mov	sp, r7
@@ -8871,60 +8709,36 @@ void vListInitialiseItem( ListItem_t * const pxItem )
  80035d4:	4770      	bx	lr
 
 080035d6 <vListInsertEnd>:
-/*-----------------------------------------------------------*/
-
-void vListInsertEnd( List_t * const pxList, ListItem_t * const pxNewListItem )
-{
  80035d6:	b480      	push	{r7}
  80035d8:	b085      	sub	sp, #20
  80035da:	af00      	add	r7, sp, #0
  80035dc:	6078      	str	r0, [r7, #4]
  80035de:	6039      	str	r1, [r7, #0]
-ListItem_t * const pxIndex = pxList->pxIndex;
  80035e0:	687b      	ldr	r3, [r7, #4]
  80035e2:	685b      	ldr	r3, [r3, #4]
  80035e4:	60fb      	str	r3, [r7, #12]
-	listTEST_LIST_ITEM_INTEGRITY( pxNewListItem );
-
-	/* Insert a new list item into pxList, but rather than sort the list,
-	makes the new list item the last item to be removed by a call to
-	listGET_OWNER_OF_NEXT_ENTRY(). */
-	pxNewListItem->pxNext = pxIndex;
  80035e6:	683b      	ldr	r3, [r7, #0]
  80035e8:	68fa      	ldr	r2, [r7, #12]
  80035ea:	605a      	str	r2, [r3, #4]
-	pxNewListItem->pxPrevious = pxIndex->pxPrevious;
  80035ec:	68fb      	ldr	r3, [r7, #12]
  80035ee:	689a      	ldr	r2, [r3, #8]
  80035f0:	683b      	ldr	r3, [r7, #0]
  80035f2:	609a      	str	r2, [r3, #8]
-
-	/* Only used during decision coverage testing. */
-	mtCOVERAGE_TEST_DELAY();
-
-	pxIndex->pxPrevious->pxNext = pxNewListItem;
  80035f4:	68fb      	ldr	r3, [r7, #12]
  80035f6:	689b      	ldr	r3, [r3, #8]
  80035f8:	683a      	ldr	r2, [r7, #0]
  80035fa:	605a      	str	r2, [r3, #4]
-	pxIndex->pxPrevious = pxNewListItem;
  80035fc:	68fb      	ldr	r3, [r7, #12]
  80035fe:	683a      	ldr	r2, [r7, #0]
  8003600:	609a      	str	r2, [r3, #8]
-
-	/* Remember which list the item is in. */
-	pxNewListItem->pxContainer = pxList;
  8003602:	683b      	ldr	r3, [r7, #0]
  8003604:	687a      	ldr	r2, [r7, #4]
  8003606:	611a      	str	r2, [r3, #16]
-
-	( pxList->uxNumberOfItems )++;
  8003608:	687b      	ldr	r3, [r7, #4]
  800360a:	681b      	ldr	r3, [r3, #0]
  800360c:	1c5a      	adds	r2, r3, #1
  800360e:	687b      	ldr	r3, [r7, #4]
  8003610:	601a      	str	r2, [r3, #0]
-}
  8003612:	bf00      	nop
  8003614:	3714      	adds	r7, #20
  8003616:	46bd      	mov	sp, r7
@@ -8932,41 +8746,21 @@ ListItem_t * const pxIndex = pxList->pxIndex;
  800361c:	4770      	bx	lr
 
 0800361e <vListInsert>:
-/*-----------------------------------------------------------*/
-
-void vListInsert( List_t * const pxList, ListItem_t * const pxNewListItem )
-{
  800361e:	b480      	push	{r7}
  8003620:	b085      	sub	sp, #20
  8003622:	af00      	add	r7, sp, #0
  8003624:	6078      	str	r0, [r7, #4]
  8003626:	6039      	str	r1, [r7, #0]
-ListItem_t *pxIterator;
-const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
  8003628:	683b      	ldr	r3, [r7, #0]
  800362a:	681b      	ldr	r3, [r3, #0]
  800362c:	60bb      	str	r3, [r7, #8]
-	new list item should be placed after it.  This ensures that TCBs which are
-	stored in ready lists (all of which have the same xItemValue value) get a
-	share of the CPU.  However, if the xItemValue is the same as the back marker
-	the iteration loop below will not end.  Therefore the value is checked
-	first, and the algorithm slightly modified if necessary. */
-	if( xValueOfInsertion == portMAX_DELAY )
  800362e:	68bb      	ldr	r3, [r7, #8]
  8003630:	f1b3 3fff 	cmp.w	r3, #4294967295
  8003634:	d103      	bne.n	800363e <vListInsert+0x20>
-	{
-		pxIterator = pxList->xListEnd.pxPrevious;
  8003636:	687b      	ldr	r3, [r7, #4]
  8003638:	691b      	ldr	r3, [r3, #16]
  800363a:	60fb      	str	r3, [r7, #12]
  800363c:	e00c      	b.n	8003658 <vListInsert+0x3a>
-			4) Using a queue or semaphore before it has been initialised or
-			   before the scheduler has been started (are interrupts firing
-			   before vTaskStartScheduler() has been called?).
-		**********************************************************************/
-
-		for( pxIterator = ( ListItem_t * ) &( pxList->xListEnd ); pxIterator->pxNext->xItemValue <= xValueOfInsertion; pxIterator = pxIterator->pxNext ) /*lint !e826 !e740 !e9087 The mini list structure is used as the list end to save RAM.  This is checked and valid. *//*lint !e440 The iterator moves to a different value, not xValueOfInsertion. */
  800363e:	687b      	ldr	r3, [r7, #4]
  8003640:	3308      	adds	r3, #8
  8003642:	60fb      	str	r3, [r7, #12]
@@ -8980,44 +8774,28 @@ const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
  8003652:	68ba      	ldr	r2, [r7, #8]
  8003654:	429a      	cmp	r2, r3
  8003656:	d2f6      	bcs.n	8003646 <vListInsert+0x28>
-			/* There is nothing to do here, just iterating to the wanted
-			insertion position. */
-		}
-	}
-
-	pxNewListItem->pxNext = pxIterator->pxNext;
  8003658:	68fb      	ldr	r3, [r7, #12]
  800365a:	685a      	ldr	r2, [r3, #4]
  800365c:	683b      	ldr	r3, [r7, #0]
  800365e:	605a      	str	r2, [r3, #4]
-	pxNewListItem->pxNext->pxPrevious = pxNewListItem;
  8003660:	683b      	ldr	r3, [r7, #0]
  8003662:	685b      	ldr	r3, [r3, #4]
  8003664:	683a      	ldr	r2, [r7, #0]
  8003666:	609a      	str	r2, [r3, #8]
-	pxNewListItem->pxPrevious = pxIterator;
  8003668:	683b      	ldr	r3, [r7, #0]
  800366a:	68fa      	ldr	r2, [r7, #12]
  800366c:	609a      	str	r2, [r3, #8]
-	pxIterator->pxNext = pxNewListItem;
  800366e:	68fb      	ldr	r3, [r7, #12]
  8003670:	683a      	ldr	r2, [r7, #0]
  8003672:	605a      	str	r2, [r3, #4]
-
-	/* Remember which list the item is in.  This allows fast removal of the
-	item later. */
-	pxNewListItem->pxContainer = pxList;
  8003674:	683b      	ldr	r3, [r7, #0]
  8003676:	687a      	ldr	r2, [r7, #4]
  8003678:	611a      	str	r2, [r3, #16]
-
-	( pxList->uxNumberOfItems )++;
  800367a:	687b      	ldr	r3, [r7, #4]
  800367c:	681b      	ldr	r3, [r3, #0]
  800367e:	1c5a      	adds	r2, r3, #1
  8003680:	687b      	ldr	r3, [r7, #4]
  8003682:	601a      	str	r2, [r3, #0]
-}
  8003684:	bf00      	nop
  8003686:	3714      	adds	r7, #20
  8003688:	46bd      	mov	sp, r7
@@ -9025,70 +8803,42 @@ const TickType_t xValueOfInsertion = pxNewListItem->xItemValue;
  800368e:	4770      	bx	lr
 
 08003690 <uxListRemove>:
-/*-----------------------------------------------------------*/
-
-UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove )
-{
  8003690:	b480      	push	{r7}
  8003692:	b085      	sub	sp, #20
  8003694:	af00      	add	r7, sp, #0
  8003696:	6078      	str	r0, [r7, #4]
-/* The list item knows which list it is in.  Obtain the list from the list
-item. */
-List_t * const pxList = pxItemToRemove->pxContainer;
  8003698:	687b      	ldr	r3, [r7, #4]
  800369a:	691b      	ldr	r3, [r3, #16]
  800369c:	60fb      	str	r3, [r7, #12]
-
-	pxItemToRemove->pxNext->pxPrevious = pxItemToRemove->pxPrevious;
  800369e:	687b      	ldr	r3, [r7, #4]
  80036a0:	685b      	ldr	r3, [r3, #4]
  80036a2:	687a      	ldr	r2, [r7, #4]
  80036a4:	6892      	ldr	r2, [r2, #8]
  80036a6:	609a      	str	r2, [r3, #8]
-	pxItemToRemove->pxPrevious->pxNext = pxItemToRemove->pxNext;
  80036a8:	687b      	ldr	r3, [r7, #4]
  80036aa:	689b      	ldr	r3, [r3, #8]
  80036ac:	687a      	ldr	r2, [r7, #4]
  80036ae:	6852      	ldr	r2, [r2, #4]
  80036b0:	605a      	str	r2, [r3, #4]
-
-	/* Only used during decision coverage testing. */
-	mtCOVERAGE_TEST_DELAY();
-
-	/* Make sure the index is left pointing to a valid item. */
-	if( pxList->pxIndex == pxItemToRemove )
  80036b2:	68fb      	ldr	r3, [r7, #12]
  80036b4:	685b      	ldr	r3, [r3, #4]
  80036b6:	687a      	ldr	r2, [r7, #4]
  80036b8:	429a      	cmp	r2, r3
  80036ba:	d103      	bne.n	80036c4 <uxListRemove+0x34>
-	{
-		pxList->pxIndex = pxItemToRemove->pxPrevious;
  80036bc:	687b      	ldr	r3, [r7, #4]
  80036be:	689a      	ldr	r2, [r3, #8]
  80036c0:	68fb      	ldr	r3, [r7, #12]
  80036c2:	605a      	str	r2, [r3, #4]
-	else
-	{
-		mtCOVERAGE_TEST_MARKER();
-	}
-
-	pxItemToRemove->pxContainer = NULL;
  80036c4:	687b      	ldr	r3, [r7, #4]
  80036c6:	2200      	movs	r2, #0
  80036c8:	611a      	str	r2, [r3, #16]
-	( pxList->uxNumberOfItems )--;
  80036ca:	68fb      	ldr	r3, [r7, #12]
  80036cc:	681b      	ldr	r3, [r3, #0]
  80036ce:	1e5a      	subs	r2, r3, #1
  80036d0:	68fb      	ldr	r3, [r7, #12]
  80036d2:	601a      	str	r2, [r3, #0]
-
-	return pxList->uxNumberOfItems;
  80036d4:	68fb      	ldr	r3, [r7, #12]
  80036d6:	681b      	ldr	r3, [r3, #0]
-}
  80036d8:	4618      	mov	r0, r3
  80036da:	3714      	adds	r7, #20
  80036dc:	46bd      	mov	sp, r7
@@ -9096,12 +8846,6 @@ List_t * const pxList = pxItemToRemove->pxContainer;
  80036e2:	4770      	bx	lr
 
 080036e4 <xTaskCreate>:
-							const char * const pcName,		/*lint !e971 Unqualified char types are allowed for strings and single characters only. */
-							const configSTACK_DEPTH_TYPE usStackDepth,
-							void * const pvParameters,
-							UBaseType_t uxPriority,
-							TaskHandle_t * const pxCreatedTask )
-	{
  80036e4:	b580      	push	{r7, lr}
  80036e6:	b08c      	sub	sp, #48	; 0x30
  80036e8:	af04      	add	r7, sp, #16
@@ -9110,70 +8854,32 @@ List_t * const pxList = pxItemToRemove->pxContainer;
  80036ee:	603b      	str	r3, [r7, #0]
  80036f0:	4613      	mov	r3, r2
  80036f2:	80fb      	strh	r3, [r7, #6]
-		#else /* portSTACK_GROWTH */
-		{
-		StackType_t *pxStack;
-
-			/* Allocate space for the stack used by the task being created. */
-			pxStack = pvPortMalloc( ( ( ( size_t ) usStackDepth ) * sizeof( StackType_t ) ) ); /*lint !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack and this allocation is the stack. */
  80036f4:	88fb      	ldrh	r3, [r7, #6]
  80036f6:	009b      	lsls	r3, r3, #2
  80036f8:	4618      	mov	r0, r3
  80036fa:	f000 fea5 	bl	8004448 <pvPortMalloc>
  80036fe:	6178      	str	r0, [r7, #20]
-
-			if( pxStack != NULL )
  8003700:	697b      	ldr	r3, [r7, #20]
  8003702:	2b00      	cmp	r3, #0
  8003704:	d00e      	beq.n	8003724 <xTaskCreate+0x40>
-			{
-				/* Allocate space for the TCB. */
-				pxNewTCB = ( TCB_t * ) pvPortMalloc( sizeof( TCB_t ) ); /*lint !e9087 !e9079 All values returned by pvPortMalloc() have at least the alignment required by the MCU's stack, and the first member of TCB_t is always a pointer to the task's stack. */
  8003706:	2054      	movs	r0, #84	; 0x54
  8003708:	f000 fe9e 	bl	8004448 <pvPortMalloc>
  800370c:	61f8      	str	r0, [r7, #28]
-
-				if( pxNewTCB != NULL )
  800370e:	69fb      	ldr	r3, [r7, #28]
  8003710:	2b00      	cmp	r3, #0
  8003712:	d003      	beq.n	800371c <xTaskCreate+0x38>
-				{
-					/* Store the stack location in the TCB. */
-					pxNewTCB->pxStack = pxStack;
  8003714:	69fb      	ldr	r3, [r7, #28]
  8003716:	697a      	ldr	r2, [r7, #20]
  8003718:	631a      	str	r2, [r3, #48]	; 0x30
  800371a:	e005      	b.n	8003728 <xTaskCreate+0x44>
-				}
-				else
-				{
-					/* The stack cannot be used as the TCB was not created.  Free
-					it again. */
-					vPortFree( pxStack );
  800371c:	6978      	ldr	r0, [r7, #20]
  800371e:	f000 ff5f 	bl	80045e0 <vPortFree>
  8003722:	e001      	b.n	8003728 <xTaskCreate+0x44>
-				}
-			}
-			else
-			{
-				pxNewTCB = NULL;
  8003724:	2300      	movs	r3, #0
  8003726:	61fb      	str	r3, [r7, #28]
-			}
-		}
-		#endif /* portSTACK_GROWTH */
-
-		if( pxNewTCB != NULL )
  8003728:	69fb      	ldr	r3, [r7, #28]
  800372a:	2b00      	cmp	r3, #0
  800372c:	d013      	beq.n	8003756 <xTaskCreate+0x72>
-				task was created dynamically in case it is later deleted. */
-				pxNewTCB->ucStaticallyAllocated = tskDYNAMICALLY_ALLOCATED_STACK_AND_TCB;
-			}
-			#endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
-
-			prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL );
  800372e:	88fa      	ldrh	r2, [r7, #6]
  8003730:	2300      	movs	r3, #0
  8003732:	9303      	str	r3, [sp, #12]
@@ -9187,36 +8893,20 @@ List_t * const pxList = pxItemToRemove->pxContainer;
  8003742:	68b9      	ldr	r1, [r7, #8]
  8003744:	68f8      	ldr	r0, [r7, #12]
  8003746:	f000 f80e 	bl	8003766 <prvInitialiseNewTask>
-			prvAddNewTaskToReadyList( pxNewTCB );
  800374a:	69f8      	ldr	r0, [r7, #28]
  800374c:	f000 f892 	bl	8003874 <prvAddNewTaskToReadyList>
-			xReturn = pdPASS;
  8003750:	2301      	movs	r3, #1
  8003752:	61bb      	str	r3, [r7, #24]
  8003754:	e002      	b.n	800375c <xTaskCreate+0x78>
-		}
-		else
-		{
-			xReturn = errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY;
  8003756:	f04f 33ff 	mov.w	r3, #4294967295
  800375a:	61bb      	str	r3, [r7, #24]
-		}
-
-		return xReturn;
  800375c:	69bb      	ldr	r3, [r7, #24]
-	}
  800375e:	4618      	mov	r0, r3
  8003760:	3720      	adds	r7, #32
  8003762:	46bd      	mov	sp, r7
  8003764:	bd80      	pop	{r7, pc}
 
 08003766 <prvInitialiseNewTask>:
-									void * const pvParameters,
-									UBaseType_t uxPriority,
-									TaskHandle_t * const pxCreatedTask,
-									TCB_t *pxNewTCB,
-									const MemoryRegion_t * const xRegions )
-{
  8003766:	b580      	push	{r7, lr}
  8003768:	b088      	sub	sp, #32
  800376a:	af00      	add	r7, sp, #0
@@ -9224,12 +8914,6 @@ List_t * const pxList = pxItemToRemove->pxContainer;
  800376e:	60b9      	str	r1, [r7, #8]
  8003770:	607a      	str	r2, [r7, #4]
  8003772:	603b      	str	r3, [r7, #0]
-	grows from high memory to low (as per the 80x86) or vice versa.
-	portSTACK_GROWTH is used to make the result positive or negative as required
-	by the port. */
-	#if( portSTACK_GROWTH < 0 )
-	{
-		pxTopOfStack = &( pxNewTCB->pxStack[ ulStackDepth - ( uint32_t ) 1 ] );
  8003774:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  8003776:	6b1a      	ldr	r2, [r3, #48]	; 0x30
  8003778:	687b      	ldr	r3, [r7, #4]
@@ -9238,52 +8922,26 @@ List_t * const pxList = pxItemToRemove->pxContainer;
  8003780:	009b      	lsls	r3, r3, #2
  8003782:	4413      	add	r3, r2
  8003784:	61bb      	str	r3, [r7, #24]
-		pxTopOfStack = ( StackType_t * ) ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack ) & ( ~( ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) ) ); /*lint !e923 !e9033 !e9078 MISRA exception.  Avoiding casts between pointers and integers is not practical.  Size differences accounted for using portPOINTER_SIZE_TYPE type.  Checked by assert(). */
  8003786:	69bb      	ldr	r3, [r7, #24]
  8003788:	f023 0307 	bic.w	r3, r3, #7
  800378c:	61bb      	str	r3, [r7, #24]
-
-		/* Check the alignment of the calculated top of stack is correct. */
-		configASSERT( ( ( ( portPOINTER_SIZE_TYPE ) pxTopOfStack & ( portPOINTER_SIZE_TYPE ) portBYTE_ALIGNMENT_MASK ) == 0UL ) );
  800378e:	69bb      	ldr	r3, [r7, #24]
  8003790:	f003 0307 	and.w	r3, r3, #7
  8003794:	2b00      	cmp	r3, #0
  8003796:	d00a      	beq.n	80037ae <prvInitialiseNewTask+0x48>
-
-portFORCE_INLINE static void vPortRaiseBASEPRI( void )
-{
-uint32_t ulNewBASEPRI;
-
-	__asm volatile
  8003798:	f04f 0350 	mov.w	r3, #80	; 0x50
  800379c:	f383 8811 	msr	BASEPRI, r3
  80037a0:	f3bf 8f6f 	isb	sy
  80037a4:	f3bf 8f4f 	dsb	sy
  80037a8:	617b      	str	r3, [r7, #20]
-		"	msr basepri, %0											\n" \
-		"	isb														\n" \
-		"	dsb														\n" \
-		:"=r" (ulNewBASEPRI) : "i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY ) : "memory"
-	);
-}
  80037aa:	bf00      	nop
  80037ac:	e7fe      	b.n	80037ac <prvInitialiseNewTask+0x46>
-		pxNewTCB->pxEndOfStack = pxNewTCB->pxStack + ( ulStackDepth - ( uint32_t ) 1 );
-	}
-	#endif /* portSTACK_GROWTH */
-
-	/* Store the task name in the TCB. */
-	if( pcName != NULL )
  80037ae:	68bb      	ldr	r3, [r7, #8]
  80037b0:	2b00      	cmp	r3, #0
  80037b2:	d01f      	beq.n	80037f4 <prvInitialiseNewTask+0x8e>
-	{
-		for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
  80037b4:	2300      	movs	r3, #0
  80037b6:	61fb      	str	r3, [r7, #28]
  80037b8:	e012      	b.n	80037e0 <prvInitialiseNewTask+0x7a>
-		{
-			pxNewTCB->pcTaskName[ x ] = pcName[ x ];
  80037ba:	68ba      	ldr	r2, [r7, #8]
  80037bc:	69fb      	ldr	r3, [r7, #28]
  80037be:	4413      	add	r3, r2
@@ -9294,18 +8952,12 @@ uint32_t ulNewBASEPRI;
  80037c8:	3334      	adds	r3, #52	; 0x34
  80037ca:	460a      	mov	r2, r1
  80037cc:	701a      	strb	r2, [r3, #0]
-
-			/* Don't copy all configMAX_TASK_NAME_LEN if the string is shorter than
-			configMAX_TASK_NAME_LEN characters just in case the memory after the
-			string is not accessible (extremely unlikely). */
-			if( pcName[ x ] == ( char ) 0x00 )
  80037ce:	68ba      	ldr	r2, [r7, #8]
  80037d0:	69fb      	ldr	r3, [r7, #28]
  80037d2:	4413      	add	r3, r2
  80037d4:	781b      	ldrb	r3, [r3, #0]
  80037d6:	2b00      	cmp	r3, #0
  80037d8:	d006      	beq.n	80037e8 <prvInitialiseNewTask+0x82>
-		for( x = ( UBaseType_t ) 0; x < ( UBaseType_t ) configMAX_TASK_NAME_LEN; x++ )
  80037da:	69fb      	ldr	r3, [r7, #28]
  80037dc:	3301      	adds	r3, #1
  80037de:	61fb      	str	r3, [r7, #28]
@@ -9313,109 +8965,52 @@ uint32_t ulNewBASEPRI;
  80037e2:	2b0f      	cmp	r3, #15
  80037e4:	d9e9      	bls.n	80037ba <prvInitialiseNewTask+0x54>
  80037e6:	e000      	b.n	80037ea <prvInitialiseNewTask+0x84>
-			{
-				break;
  80037e8:	bf00      	nop
-			}
-		}
-
-		/* Ensure the name string is terminated in the case that the string length
-		was greater or equal to configMAX_TASK_NAME_LEN. */
-		pxNewTCB->pcTaskName[ configMAX_TASK_NAME_LEN - 1 ] = '\0';
  80037ea:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  80037ec:	2200      	movs	r2, #0
  80037ee:	f883 2043 	strb.w	r2, [r3, #67]	; 0x43
  80037f2:	e003      	b.n	80037fc <prvInitialiseNewTask+0x96>
-	}
-	else
-	{
-		/* The task has not been given a name, so just ensure there is a NULL
-		terminator when it is read out. */
-		pxNewTCB->pcTaskName[ 0 ] = 0x00;
  80037f4:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  80037f6:	2200      	movs	r2, #0
  80037f8:	f883 2034 	strb.w	r2, [r3, #52]	; 0x34
-	}
-
-	/* This is used as an array index so must ensure it's not too large.  First
-	remove the privilege bit if one is present. */
-	if( uxPriority >= ( UBaseType_t ) configMAX_PRIORITIES )
  80037fc:	6abb      	ldr	r3, [r7, #40]	; 0x28
  80037fe:	2b06      	cmp	r3, #6
  8003800:	d901      	bls.n	8003806 <prvInitialiseNewTask+0xa0>
-	{
-		uxPriority = ( UBaseType_t ) configMAX_PRIORITIES - ( UBaseType_t ) 1U;
  8003802:	2306      	movs	r3, #6
  8003804:	62bb      	str	r3, [r7, #40]	; 0x28
-	else
-	{
-		mtCOVERAGE_TEST_MARKER();
-	}
-
-	pxNewTCB->uxPriority = uxPriority;
  8003806:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  8003808:	6aba      	ldr	r2, [r7, #40]	; 0x28
  800380a:	62da      	str	r2, [r3, #44]	; 0x2c
-	#if ( configUSE_MUTEXES == 1 )
-	{
-		pxNewTCB->uxBasePriority = uxPriority;
  800380c:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800380e:	6aba      	ldr	r2, [r7, #40]	; 0x28
  8003810:	645a      	str	r2, [r3, #68]	; 0x44
-		pxNewTCB->uxMutexesHeld = 0;
  8003812:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  8003814:	2200      	movs	r2, #0
  8003816:	649a      	str	r2, [r3, #72]	; 0x48
-	}
-	#endif /* configUSE_MUTEXES */
-
-	vListInitialiseItem( &( pxNewTCB->xStateListItem ) );
  8003818:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800381a:	3304      	adds	r3, #4
  800381c:	4618      	mov	r0, r3
  800381e:	f7ff fecd 	bl	80035bc <vListInitialiseItem>
-	vListInitialiseItem( &( pxNewTCB->xEventListItem ) );
  8003822:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  8003824:	3318      	adds	r3, #24
  8003826:	4618      	mov	r0, r3
  8003828:	f7ff fec8 	bl	80035bc <vListInitialiseItem>
-
-	/* Set the pxNewTCB as a link back from the ListItem_t.  This is so we can get
-	back to	the containing TCB from a generic item in a list. */
-	listSET_LIST_ITEM_OWNER( &( pxNewTCB->xStateListItem ), pxNewTCB );
  800382c:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800382e:	6b3a      	ldr	r2, [r7, #48]	; 0x30
  8003830:	611a      	str	r2, [r3, #16]
-
-	/* Event lists are always in priority order. */
-	listSET_LIST_ITEM_VALUE( &( pxNewTCB->xEventListItem ), ( TickType_t ) configMAX_PRIORITIES - ( TickType_t ) uxPriority ); /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
  8003832:	6abb      	ldr	r3, [r7, #40]	; 0x28
  8003834:	f1c3 0207 	rsb	r2, r3, #7
  8003838:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800383a:	619a      	str	r2, [r3, #24]
-	listSET_LIST_ITEM_OWNER( &( pxNewTCB->xEventListItem ), pxNewTCB );
  800383c:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800383e:	6b3a      	ldr	r2, [r7, #48]	; 0x30
  8003840:	625a      	str	r2, [r3, #36]	; 0x24
-	}
-	#endif
-
-	#if ( configUSE_TASK_NOTIFICATIONS == 1 )
-	{
-		pxNewTCB->ulNotifiedValue = 0;
  8003842:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  8003844:	2200      	movs	r2, #0
  8003846:	64da      	str	r2, [r3, #76]	; 0x4c
-		pxNewTCB->ucNotifyState = taskNOT_WAITING_NOTIFICATION;
  8003848:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800384a:	2200      	movs	r2, #0
  800384c:	f883 2050 	strb.w	r2, [r3, #80]	; 0x50
-			}
-			#endif /* portSTACK_GROWTH */
-		}
-		#else /* portHAS_STACK_OVERFLOW_CHECKING */
-		{
-			pxNewTCB->pxTopOfStack = pxPortInitialiseStack( pxTopOfStack, pxTaskCode, pvParameters );
  8003850:	683a      	ldr	r2, [r7, #0]
  8003852:	68f9      	ldr	r1, [r7, #12]
  8003854:	69b8      	ldr	r0, [r7, #24]
@@ -9423,90 +9018,45 @@ uint32_t ulNewBASEPRI;
  800385a:	4602      	mov	r2, r0
  800385c:	6b3b      	ldr	r3, [r7, #48]	; 0x30
  800385e:	601a      	str	r2, [r3, #0]
-		}
-		#endif /* portHAS_STACK_OVERFLOW_CHECKING */
-	}
-	#endif /* portUSING_MPU_WRAPPERS */
-
-	if( pxCreatedTask != NULL )
  8003860:	6afb      	ldr	r3, [r7, #44]	; 0x2c
  8003862:	2b00      	cmp	r3, #0
  8003864:	d002      	beq.n	800386c <prvInitialiseNewTask+0x106>
-	{
-		/* Pass the handle out in an anonymous way.  The handle can be used to
-		change the created task's priority, delete the created task, etc.*/
-		*pxCreatedTask = ( TaskHandle_t ) pxNewTCB;
  8003866:	6afb      	ldr	r3, [r7, #44]	; 0x2c
  8003868:	6b3a      	ldr	r2, [r7, #48]	; 0x30
  800386a:	601a      	str	r2, [r3, #0]
-	}
-	else
-	{
-		mtCOVERAGE_TEST_MARKER();
-	}
-}
  800386c:	bf00      	nop
  800386e:	3720      	adds	r7, #32
  8003870:	46bd      	mov	sp, r7
  8003872:	bd80      	pop	{r7, pc}
 
 08003874 <prvAddNewTaskToReadyList>:
-/*-----------------------------------------------------------*/
-
-static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
-{
  8003874:	b580      	push	{r7, lr}
  8003876:	b082      	sub	sp, #8
  8003878:	af00      	add	r7, sp, #0
  800387a:	6078      	str	r0, [r7, #4]
-	/* Ensure interrupts don't access the task lists while the lists are being
-	updated. */
-	taskENTER_CRITICAL();
  800387c:	f000 fd02 	bl	8004284 <vPortEnterCritical>
-	{
-		uxCurrentNumberOfTasks++;
  8003880:	4b2a      	ldr	r3, [pc, #168]	; (800392c <prvAddNewTaskToReadyList+0xb8>)
  8003882:	681b      	ldr	r3, [r3, #0]
  8003884:	3301      	adds	r3, #1
  8003886:	4a29      	ldr	r2, [pc, #164]	; (800392c <prvAddNewTaskToReadyList+0xb8>)
  8003888:	6013      	str	r3, [r2, #0]
-		if( pxCurrentTCB == NULL )
  800388a:	4b29      	ldr	r3, [pc, #164]	; (8003930 <prvAddNewTaskToReadyList+0xbc>)
  800388c:	681b      	ldr	r3, [r3, #0]
  800388e:	2b00      	cmp	r3, #0
  8003890:	d109      	bne.n	80038a6 <prvAddNewTaskToReadyList+0x32>
-		{
-			/* There are no other tasks, or all the other tasks are in
-			the suspended state - make this the current task. */
-			pxCurrentTCB = pxNewTCB;
  8003892:	4a27      	ldr	r2, [pc, #156]	; (8003930 <prvAddNewTaskToReadyList+0xbc>)
  8003894:	687b      	ldr	r3, [r7, #4]
  8003896:	6013      	str	r3, [r2, #0]
-
-			if( uxCurrentNumberOfTasks == ( UBaseType_t ) 1 )
  8003898:	4b24      	ldr	r3, [pc, #144]	; (800392c <prvAddNewTaskToReadyList+0xb8>)
  800389a:	681b      	ldr	r3, [r3, #0]
  800389c:	2b01      	cmp	r3, #1
  800389e:	d110      	bne.n	80038c2 <prvAddNewTaskToReadyList+0x4e>
-			{
-				/* This is the first task to be created so do the preliminary
-				initialisation required.  We will not recover if this call
-				fails, but we will report the failure. */
-				prvInitialiseTaskLists();
  80038a0:	f000 faa4 	bl	8003dec <prvInitialiseTaskLists>
  80038a4:	e00d      	b.n	80038c2 <prvAddNewTaskToReadyList+0x4e>
-		else
-		{
-			/* If the scheduler is not already running, make this task the
-			current task if it is the highest priority task to be created
-			so far. */
-			if( xSchedulerRunning == pdFALSE )
  80038a6:	4b23      	ldr	r3, [pc, #140]	; (8003934 <prvAddNewTaskToReadyList+0xc0>)
  80038a8:	681b      	ldr	r3, [r3, #0]
  80038aa:	2b00      	cmp	r3, #0
  80038ac:	d109      	bne.n	80038c2 <prvAddNewTaskToReadyList+0x4e>
-			{
-				if( pxCurrentTCB->uxPriority <= pxNewTCB->uxPriority )
  80038ae:	4b20      	ldr	r3, [pc, #128]	; (8003930 <prvAddNewTaskToReadyList+0xbc>)
  80038b0:	681b      	ldr	r3, [r3, #0]
  80038b2:	6ada      	ldr	r2, [r3, #44]	; 0x2c
@@ -9514,28 +9064,14 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
  80038b6:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  80038b8:	429a      	cmp	r2, r3
  80038ba:	d802      	bhi.n	80038c2 <prvAddNewTaskToReadyList+0x4e>
-				{
-					pxCurrentTCB = pxNewTCB;
  80038bc:	4a1c      	ldr	r2, [pc, #112]	; (8003930 <prvAddNewTaskToReadyList+0xbc>)
  80038be:	687b      	ldr	r3, [r7, #4]
  80038c0:	6013      	str	r3, [r2, #0]
-			{
-				mtCOVERAGE_TEST_MARKER();
-			}
-		}
-
-		uxTaskNumber++;
  80038c2:	4b1d      	ldr	r3, [pc, #116]	; (8003938 <prvAddNewTaskToReadyList+0xc4>)
  80038c4:	681b      	ldr	r3, [r3, #0]
  80038c6:	3301      	adds	r3, #1
  80038c8:	4a1b      	ldr	r2, [pc, #108]	; (8003938 <prvAddNewTaskToReadyList+0xc4>)
  80038ca:	6013      	str	r3, [r2, #0]
-			pxNewTCB->uxTCBNumber = uxTaskNumber;
-		}
-		#endif /* configUSE_TRACE_FACILITY */
-		traceTASK_CREATE( pxNewTCB );
-
-		prvAddTaskToReadyList( pxNewTCB );
  80038cc:	687b      	ldr	r3, [r7, #4]
  80038ce:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  80038d0:	2201      	movs	r2, #1
@@ -9558,21 +9094,11 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
  80038f2:	4619      	mov	r1, r3
  80038f4:	4610      	mov	r0, r2
  80038f6:	f7ff fe6e 	bl	80035d6 <vListInsertEnd>
-
-		portSETUP_TCB( pxNewTCB );
-	}
-	taskEXIT_CRITICAL();
  80038fa:	f000 fcf3 	bl	80042e4 <vPortExitCritical>
-
-	if( xSchedulerRunning != pdFALSE )
  80038fe:	4b0d      	ldr	r3, [pc, #52]	; (8003934 <prvAddNewTaskToReadyList+0xc0>)
  8003900:	681b      	ldr	r3, [r3, #0]
  8003902:	2b00      	cmp	r3, #0
  8003904:	d00e      	beq.n	8003924 <prvAddNewTaskToReadyList+0xb0>
-	{
-		/* If the created task is of a higher priority than the current task
-		then it should run now. */
-		if( pxCurrentTCB->uxPriority < pxNewTCB->uxPriority )
  8003906:	4b0a      	ldr	r3, [pc, #40]	; (8003930 <prvAddNewTaskToReadyList+0xbc>)
  8003908:	681b      	ldr	r3, [r3, #0]
  800390a:	6ada      	ldr	r2, [r3, #44]	; 0x2c
@@ -9580,19 +9106,11 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
  800390e:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  8003910:	429a      	cmp	r2, r3
  8003912:	d207      	bcs.n	8003924 <prvAddNewTaskToReadyList+0xb0>
-		{
-			taskYIELD_IF_USING_PREEMPTION();
  8003914:	4b0b      	ldr	r3, [pc, #44]	; (8003944 <prvAddNewTaskToReadyList+0xd0>)
  8003916:	f04f 5280 	mov.w	r2, #268435456	; 0x10000000
  800391a:	601a      	str	r2, [r3, #0]
  800391c:	f3bf 8f4f 	dsb	sy
  8003920:	f3bf 8f6f 	isb	sy
-	}
-	else
-	{
-		mtCOVERAGE_TEST_MARKER();
-	}
-}
  8003924:	bf00      	nop
  8003926:	3708      	adds	r7, #8
  8003928:	46bd      	mov	sp, r7
@@ -9606,77 +9124,40 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
  8003944:	e000ed04 	.word	0xe000ed04
 
 08003948 <vTaskDelay>:
-/*-----------------------------------------------------------*/
-
-#if ( INCLUDE_vTaskDelay == 1 )
-
-	void vTaskDelay( const TickType_t xTicksToDelay )
-	{
  8003948:	b580      	push	{r7, lr}
  800394a:	b084      	sub	sp, #16
  800394c:	af00      	add	r7, sp, #0
  800394e:	6078      	str	r0, [r7, #4]
-	BaseType_t xAlreadyYielded = pdFALSE;
  8003950:	2300      	movs	r3, #0
  8003952:	60fb      	str	r3, [r7, #12]
-
-		/* A delay time of zero just forces a reschedule. */
-		if( xTicksToDelay > ( TickType_t ) 0U )
  8003954:	687b      	ldr	r3, [r7, #4]
  8003956:	2b00      	cmp	r3, #0
  8003958:	d017      	beq.n	800398a <vTaskDelay+0x42>
-		{
-			configASSERT( uxSchedulerSuspended == 0 );
  800395a:	4b13      	ldr	r3, [pc, #76]	; (80039a8 <vTaskDelay+0x60>)
  800395c:	681b      	ldr	r3, [r3, #0]
  800395e:	2b00      	cmp	r3, #0
  8003960:	d00a      	beq.n	8003978 <vTaskDelay+0x30>
-	__asm volatile
  8003962:	f04f 0350 	mov.w	r3, #80	; 0x50
  8003966:	f383 8811 	msr	BASEPRI, r3
  800396a:	f3bf 8f6f 	isb	sy
  800396e:	f3bf 8f4f 	dsb	sy
  8003972:	60bb      	str	r3, [r7, #8]
-}
  8003974:	bf00      	nop
  8003976:	e7fe      	b.n	8003976 <vTaskDelay+0x2e>
-			vTaskSuspendAll();
  8003978:	f000 f862 	bl	8003a40 <vTaskSuspendAll>
-				list or removed from the blocked list until the scheduler
-				is resumed.
-
-				This task cannot be in an event list as it is the currently
-				executing task. */
-				prvAddCurrentTaskToDelayedList( xTicksToDelay, pdFALSE );
  800397c:	2100      	movs	r1, #0
  800397e:	6878      	ldr	r0, [r7, #4]
  8003980:	f000 faf0 	bl	8003f64 <prvAddCurrentTaskToDelayedList>
-			}
-			xAlreadyYielded = xTaskResumeAll();
  8003984:	f000 f86a 	bl	8003a5c <xTaskResumeAll>
  8003988:	60f8      	str	r0, [r7, #12]
-			mtCOVERAGE_TEST_MARKER();
-		}
-
-		/* Force a reschedule if xTaskResumeAll has not already done so, we may
-		have put ourselves to sleep. */
-		if( xAlreadyYielded == pdFALSE )
  800398a:	68fb      	ldr	r3, [r7, #12]
  800398c:	2b00      	cmp	r3, #0
  800398e:	d107      	bne.n	80039a0 <vTaskDelay+0x58>
-		{
-			portYIELD_WITHIN_API();
  8003990:	4b06      	ldr	r3, [pc, #24]	; (80039ac <vTaskDelay+0x64>)
  8003992:	f04f 5280 	mov.w	r2, #268435456	; 0x10000000
  8003996:	601a      	str	r2, [r3, #0]
  8003998:	f3bf 8f4f 	dsb	sy
  800399c:	f3bf 8f6f 	isb	sy
-		}
-		else
-		{
-			mtCOVERAGE_TEST_MARKER();
-		}
-	}
  80039a0:	bf00      	nop
  80039a2:	3710      	adds	r7, #16
  80039a4:	46bd      	mov	sp, r7
@@ -9685,21 +9166,9 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
  80039ac:	e000ed04 	.word	0xe000ed04
 
 080039b0 <vTaskStartScheduler>:
-
-#endif /* ( ( INCLUDE_xTaskResumeFromISR == 1 ) && ( INCLUDE_vTaskSuspend == 1 ) ) */
-/*-----------------------------------------------------------*/
-
-void vTaskStartScheduler( void )
-{
  80039b0:	b580      	push	{r7, lr}
  80039b2:	b086      	sub	sp, #24
  80039b4:	af02      	add	r7, sp, #8
-		}
-	}
-	#else
-	{
-		/* The Idle task is being created using dynamically allocated RAM. */
-		xReturn = xTaskCreate(	prvIdleTask,
  80039b6:	4b1c      	ldr	r3, [pc, #112]	; (8003a28 <vTaskStartScheduler+0x78>)
  80039b8:	9301      	str	r3, [sp, #4]
  80039ba:	2300      	movs	r3, #0
@@ -9710,68 +9179,36 @@ void vTaskStartScheduler( void )
  80039c4:	481a      	ldr	r0, [pc, #104]	; (8003a30 <vTaskStartScheduler+0x80>)
  80039c6:	f7ff fe8d 	bl	80036e4 <xTaskCreate>
  80039ca:	60f8      	str	r0, [r7, #12]
-			mtCOVERAGE_TEST_MARKER();
-		}
-	}
-	#endif /* configUSE_TIMERS */
-
-	if( xReturn == pdPASS )
  80039cc:	68fb      	ldr	r3, [r7, #12]
  80039ce:	2b01      	cmp	r3, #1
  80039d0:	d116      	bne.n	8003a00 <vTaskStartScheduler+0x50>
-	__asm volatile
  80039d2:	f04f 0350 	mov.w	r3, #80	; 0x50
  80039d6:	f383 8811 	msr	BASEPRI, r3
  80039da:	f3bf 8f6f 	isb	sy
  80039de:	f3bf 8f4f 	dsb	sy
  80039e2:	60bb      	str	r3, [r7, #8]
-}
  80039e4:	bf00      	nop
-			for additional information. */
-			_impure_ptr = &( pxCurrentTCB->xNewLib_reent );
-		}
-		#endif /* configUSE_NEWLIB_REENTRANT */
-
-		xNextTaskUnblockTime = portMAX_DELAY;
  80039e6:	4b13      	ldr	r3, [pc, #76]	; (8003a34 <vTaskStartScheduler+0x84>)
  80039e8:	f04f 32ff 	mov.w	r2, #4294967295
  80039ec:	601a      	str	r2, [r3, #0]
-		xSchedulerRunning = pdTRUE;
  80039ee:	4b12      	ldr	r3, [pc, #72]	; (8003a38 <vTaskStartScheduler+0x88>)
  80039f0:	2201      	movs	r2, #1
  80039f2:	601a      	str	r2, [r3, #0]
-		xTickCount = ( TickType_t ) configINITIAL_TICK_COUNT;
  80039f4:	4b11      	ldr	r3, [pc, #68]	; (8003a3c <vTaskStartScheduler+0x8c>)
  80039f6:	2200      	movs	r2, #0
  80039f8:	601a      	str	r2, [r3, #0]
-
-		traceTASK_SWITCHED_IN();
-
-		/* Setting up the timer tick is hardware specific and thus in the
-		portable interface. */
-		if( xPortStartScheduler() != pdFALSE )
  80039fa:	f000 fba1 	bl	8004140 <xPortStartScheduler>
-	}
-
-	/* Prevent compiler warnings if INCLUDE_xTaskGetIdleTaskHandle is set to 0,
-	meaning xIdleTaskHandle is not used anywhere else. */
-	( void ) xIdleTaskHandle;
-}
  80039fe:	e00e      	b.n	8003a1e <vTaskStartScheduler+0x6e>
-		configASSERT( xReturn != errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY );
  8003a00:	68fb      	ldr	r3, [r7, #12]
  8003a02:	f1b3 3fff 	cmp.w	r3, #4294967295
  8003a06:	d10a      	bne.n	8003a1e <vTaskStartScheduler+0x6e>
-	__asm volatile
  8003a08:	f04f 0350 	mov.w	r3, #80	; 0x50
  8003a0c:	f383 8811 	msr	BASEPRI, r3
  8003a10:	f3bf 8f6f 	isb	sy
  8003a14:	f3bf 8f4f 	dsb	sy
  8003a18:	607b      	str	r3, [r7, #4]
-}
  8003a1a:	bf00      	nop
  8003a1c:	e7fe      	b.n	8003a1c <vTaskStartScheduler+0x6c>
-}
  8003a1e:	bf00      	nop
  8003a20:	3710      	adds	r7, #16
  8003a22:	46bd      	mov	sp, r7
@@ -9785,30 +9222,13 @@ void vTaskStartScheduler( void )
  8003a3c:	2000027c 	.word	0x2000027c
 
 08003a40 <vTaskSuspendAll>:
-	vPortEndScheduler();
-}
-/*----------------------------------------------------------*/
-
-void vTaskSuspendAll( void )
-{
  8003a40:	b480      	push	{r7}
  8003a42:	af00      	add	r7, sp, #0
-	do not otherwise exhibit real time behaviour. */
-	portSOFTWARE_BARRIER();
-
-	/* The scheduler is suspended if uxSchedulerSuspended is non-zero.  An increment
-	is used to allow calls to vTaskSuspendAll() to nest. */
-	++uxSchedulerSuspended;
  8003a44:	4b04      	ldr	r3, [pc, #16]	; (8003a58 <vTaskSuspendAll+0x18>)
  8003a46:	681b      	ldr	r3, [r3, #0]
  8003a48:	3301      	adds	r3, #1
  8003a4a:	4a03      	ldr	r2, [pc, #12]	; (8003a58 <vTaskSuspendAll+0x18>)
  8003a4c:	6013      	str	r3, [r2, #0]
-
-	/* Enforces ordering for ports and optimised compilers that may otherwise place
-	the above increment elsewhere. */
-	portMEMORY_BARRIER();
-}
  8003a4e:	bf00      	nop
  8003a50:	46bd      	mov	sp, r7
  8003a52:	f85d 7b04 	ldr.w	r7, [sp], #4
@@ -9816,86 +9236,51 @@ void vTaskSuspendAll( void )
  8003a58:	200002a0 	.word	0x200002a0
 
 08003a5c <xTaskResumeAll>:
-
-#endif /* configUSE_TICKLESS_IDLE */
-/*----------------------------------------------------------*/
-
-BaseType_t xTaskResumeAll( void )
-{
  8003a5c:	b580      	push	{r7, lr}
  8003a5e:	b084      	sub	sp, #16
  8003a60:	af00      	add	r7, sp, #0
-TCB_t *pxTCB = NULL;
  8003a62:	2300      	movs	r3, #0
  8003a64:	60fb      	str	r3, [r7, #12]
-BaseType_t xAlreadyYielded = pdFALSE;
  8003a66:	2300      	movs	r3, #0
  8003a68:	60bb      	str	r3, [r7, #8]
-
-	/* If uxSchedulerSuspended is zero then this function does not match a
-	previous call to vTaskSuspendAll(). */
-	configASSERT( uxSchedulerSuspended );
  8003a6a:	4b41      	ldr	r3, [pc, #260]	; (8003b70 <xTaskResumeAll+0x114>)
  8003a6c:	681b      	ldr	r3, [r3, #0]
  8003a6e:	2b00      	cmp	r3, #0
  8003a70:	d10a      	bne.n	8003a88 <xTaskResumeAll+0x2c>
-	__asm volatile
  8003a72:	f04f 0350 	mov.w	r3, #80	; 0x50
  8003a76:	f383 8811 	msr	BASEPRI, r3
  8003a7a:	f3bf 8f6f 	isb	sy
  8003a7e:	f3bf 8f4f 	dsb	sy
  8003a82:	603b      	str	r3, [r7, #0]
-}
  8003a84:	bf00      	nop
  8003a86:	e7fe      	b.n	8003a86 <xTaskResumeAll+0x2a>
-	/* It is possible that an ISR caused a task to be removed from an event
-	list while the scheduler was suspended.  If this was the case then the
-	removed task will have been added to the xPendingReadyList.  Once the
-	scheduler has been resumed it is safe to move all the pending ready
-	tasks from this list into their appropriate ready list. */
-	taskENTER_CRITICAL();
  8003a88:	f000 fbfc 	bl	8004284 <vPortEnterCritical>
-	{
-		--uxSchedulerSuspended;
  8003a8c:	4b38      	ldr	r3, [pc, #224]	; (8003b70 <xTaskResumeAll+0x114>)
  8003a8e:	681b      	ldr	r3, [r3, #0]
  8003a90:	3b01      	subs	r3, #1
  8003a92:	4a37      	ldr	r2, [pc, #220]	; (8003b70 <xTaskResumeAll+0x114>)
  8003a94:	6013      	str	r3, [r2, #0]
-
-		if( uxSchedulerSuspended == ( UBaseType_t ) pdFALSE )
  8003a96:	4b36      	ldr	r3, [pc, #216]	; (8003b70 <xTaskResumeAll+0x114>)
  8003a98:	681b      	ldr	r3, [r3, #0]
  8003a9a:	2b00      	cmp	r3, #0
  8003a9c:	d161      	bne.n	8003b62 <xTaskResumeAll+0x106>
-		{
-			if( uxCurrentNumberOfTasks > ( UBaseType_t ) 0U )
  8003a9e:	4b35      	ldr	r3, [pc, #212]	; (8003b74 <xTaskResumeAll+0x118>)
  8003aa0:	681b      	ldr	r3, [r3, #0]
  8003aa2:	2b00      	cmp	r3, #0
  8003aa4:	d05d      	beq.n	8003b62 <xTaskResumeAll+0x106>
-			{
-				/* Move any readied tasks from the pending list into the
-				appropriate ready list. */
-				while( listLIST_IS_EMPTY( &xPendingReadyList ) == pdFALSE )
  8003aa6:	e02e      	b.n	8003b06 <xTaskResumeAll+0xaa>
-				{
-					pxTCB = listGET_OWNER_OF_HEAD_ENTRY( ( &xPendingReadyList ) ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
  8003aa8:	4b33      	ldr	r3, [pc, #204]	; (8003b78 <xTaskResumeAll+0x11c>)
  8003aaa:	68db      	ldr	r3, [r3, #12]
  8003aac:	68db      	ldr	r3, [r3, #12]
  8003aae:	60fb      	str	r3, [r7, #12]
-					( void ) uxListRemove( &( pxTCB->xEventListItem ) );
  8003ab0:	68fb      	ldr	r3, [r7, #12]
  8003ab2:	3318      	adds	r3, #24
  8003ab4:	4618      	mov	r0, r3
  8003ab6:	f7ff fdeb 	bl	8003690 <uxListRemove>
-					( void ) uxListRemove( &( pxTCB->xStateListItem ) );
  8003aba:	68fb      	ldr	r3, [r7, #12]
  8003abc:	3304      	adds	r3, #4
  8003abe:	4618      	mov	r0, r3
  8003ac0:	f7ff fde6 	bl	8003690 <uxListRemove>
-					prvAddTaskToReadyList( pxTCB );
  8003ac4:	68fb      	ldr	r3, [r7, #12]
  8003ac6:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  8003ac8:	2201      	movs	r2, #1
@@ -9918,10 +9303,6 @@ BaseType_t xAlreadyYielded = pdFALSE;
  8003aea:	4619      	mov	r1, r3
  8003aec:	4610      	mov	r0, r2
  8003aee:	f7ff fd72 	bl	80035d6 <vListInsertEnd>
-
-					/* If the moved task has a priority higher than the current
-					task then a yield must be performed. */
-					if( pxTCB->uxPriority >= pxCurrentTCB->uxPriority )
  8003af2:	68fb      	ldr	r3, [r7, #12]
  8003af4:	6ada      	ldr	r2, [r3, #44]	; 0x2c
  8003af6:	4b23      	ldr	r3, [pc, #140]	; (8003b84 <xTaskResumeAll+0x128>)
@@ -9929,112 +9310,52 @@ BaseType_t xAlreadyYielded = pdFALSE;
  8003afa:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  8003afc:	429a      	cmp	r2, r3
  8003afe:	d302      	bcc.n	8003b06 <xTaskResumeAll+0xaa>
-					{
-						xYieldPending = pdTRUE;
  8003b00:	4b21      	ldr	r3, [pc, #132]	; (8003b88 <xTaskResumeAll+0x12c>)
  8003b02:	2201      	movs	r2, #1
  8003b04:	601a      	str	r2, [r3, #0]
-				while( listLIST_IS_EMPTY( &xPendingReadyList ) == pdFALSE )
  8003b06:	4b1c      	ldr	r3, [pc, #112]	; (8003b78 <xTaskResumeAll+0x11c>)
  8003b08:	681b      	ldr	r3, [r3, #0]
  8003b0a:	2b00      	cmp	r3, #0
  8003b0c:	d1cc      	bne.n	8003aa8 <xTaskResumeAll+0x4c>
-					{
-						mtCOVERAGE_TEST_MARKER();
-					}
-				}
-
-				if( pxTCB != NULL )
  8003b0e:	68fb      	ldr	r3, [r7, #12]
  8003b10:	2b00      	cmp	r3, #0
  8003b12:	d001      	beq.n	8003b18 <xTaskResumeAll+0xbc>
-					which may have prevented the next unblock time from being
-					re-calculated, in which case re-calculate it now.  Mainly
-					important for low power tickless implementations, where
-					this can prevent an unnecessary exit from low power
-					state. */
-					prvResetNextTaskUnblockTime();
  8003b14:	f000 f9e8 	bl	8003ee8 <prvResetNextTaskUnblockTime>
-				/* If any ticks occurred while the scheduler was suspended then
-				they should be processed now.  This ensures the tick count does
-				not	slip, and that any delayed tasks are resumed at the correct
-				time. */
-				{
-					TickType_t xPendedCounts = xPendedTicks; /* Non-volatile copy. */
  8003b18:	4b1c      	ldr	r3, [pc, #112]	; (8003b8c <xTaskResumeAll+0x130>)
  8003b1a:	681b      	ldr	r3, [r3, #0]
  8003b1c:	607b      	str	r3, [r7, #4]
-
-					if( xPendedCounts > ( TickType_t ) 0U )
  8003b1e:	687b      	ldr	r3, [r7, #4]
  8003b20:	2b00      	cmp	r3, #0
  8003b22:	d010      	beq.n	8003b46 <xTaskResumeAll+0xea>
-					{
-						do
-						{
-							if( xTaskIncrementTick() != pdFALSE )
  8003b24:	f000 f836 	bl	8003b94 <xTaskIncrementTick>
  8003b28:	4603      	mov	r3, r0
  8003b2a:	2b00      	cmp	r3, #0
  8003b2c:	d002      	beq.n	8003b34 <xTaskResumeAll+0xd8>
-							{
-								xYieldPending = pdTRUE;
  8003b2e:	4b16      	ldr	r3, [pc, #88]	; (8003b88 <xTaskResumeAll+0x12c>)
  8003b30:	2201      	movs	r2, #1
  8003b32:	601a      	str	r2, [r3, #0]
-							}
-							else
-							{
-								mtCOVERAGE_TEST_MARKER();
-							}
-							--xPendedCounts;
  8003b34:	687b      	ldr	r3, [r7, #4]
  8003b36:	3b01      	subs	r3, #1
  8003b38:	607b      	str	r3, [r7, #4]
-						} while( xPendedCounts > ( TickType_t ) 0U );
  8003b3a:	687b      	ldr	r3, [r7, #4]
  8003b3c:	2b00      	cmp	r3, #0
  8003b3e:	d1f1      	bne.n	8003b24 <xTaskResumeAll+0xc8>
-
-						xPendedTicks = 0;
  8003b40:	4b12      	ldr	r3, [pc, #72]	; (8003b8c <xTaskResumeAll+0x130>)
  8003b42:	2200      	movs	r2, #0
  8003b44:	601a      	str	r2, [r3, #0]
-					{
-						mtCOVERAGE_TEST_MARKER();
-					}
-				}
-
-				if( xYieldPending != pdFALSE )
  8003b46:	4b10      	ldr	r3, [pc, #64]	; (8003b88 <xTaskResumeAll+0x12c>)
  8003b48:	681b      	ldr	r3, [r3, #0]
  8003b4a:	2b00      	cmp	r3, #0
  8003b4c:	d009      	beq.n	8003b62 <xTaskResumeAll+0x106>
-				{
-					#if( configUSE_PREEMPTION != 0 )
-					{
-						xAlreadyYielded = pdTRUE;
  8003b4e:	2301      	movs	r3, #1
  8003b50:	60bb      	str	r3, [r7, #8]
-					}
-					#endif
-					taskYIELD_IF_USING_PREEMPTION();
  8003b52:	4b0f      	ldr	r3, [pc, #60]	; (8003b90 <xTaskResumeAll+0x134>)
  8003b54:	f04f 5280 	mov.w	r2, #268435456	; 0x10000000
  8003b58:	601a      	str	r2, [r3, #0]
  8003b5a:	f3bf 8f4f 	dsb	sy
  8003b5e:	f3bf 8f6f 	isb	sy
-		else
-		{
-			mtCOVERAGE_TEST_MARKER();
-		}
-	}
-	taskEXIT_CRITICAL();
  8003b62:	f000 fbbf 	bl	80042e4 <vPortExitCritical>
-
-	return xAlreadyYielded;
  8003b66:	68bb      	ldr	r3, [r7, #8]
-}
  8003b68:	4618      	mov	r0, r3
  8003b6a:	3710      	adds	r7, #16
  8003b6c:	46bd      	mov	sp, r7
@@ -10050,64 +9371,35 @@ BaseType_t xAlreadyYielded = pdFALSE;
  8003b90:	e000ed04 	.word	0xe000ed04
 
 08003b94 <xTaskIncrementTick>:
-
-#endif /* INCLUDE_xTaskAbortDelay */
-/*----------------------------------------------------------*/
-
-BaseType_t xTaskIncrementTick( void )
-{
  8003b94:	b580      	push	{r7, lr}
  8003b96:	b086      	sub	sp, #24
  8003b98:	af00      	add	r7, sp, #0
-TCB_t * pxTCB;
-TickType_t xItemValue;
-BaseType_t xSwitchRequired = pdFALSE;
  8003b9a:	2300      	movs	r3, #0
  8003b9c:	617b      	str	r3, [r7, #20]
-
-	/* Called by the portable layer each time a tick interrupt occurs.
-	Increments the tick then checks to see if the new tick value will cause any
-	tasks to be unblocked. */
-	traceTASK_INCREMENT_TICK( xTickCount );
-	if( uxSchedulerSuspended == ( UBaseType_t ) pdFALSE )
  8003b9e:	4b4e      	ldr	r3, [pc, #312]	; (8003cd8 <xTaskIncrementTick+0x144>)
  8003ba0:	681b      	ldr	r3, [r3, #0]
  8003ba2:	2b00      	cmp	r3, #0
  8003ba4:	f040 808e 	bne.w	8003cc4 <xTaskIncrementTick+0x130>
-	{
-		/* Minor optimisation.  The tick count cannot change in this
-		block. */
-		const TickType_t xConstTickCount = xTickCount + ( TickType_t ) 1;
  8003ba8:	4b4c      	ldr	r3, [pc, #304]	; (8003cdc <xTaskIncrementTick+0x148>)
  8003baa:	681b      	ldr	r3, [r3, #0]
  8003bac:	3301      	adds	r3, #1
  8003bae:	613b      	str	r3, [r7, #16]
-
-		/* Increment the RTOS tick, switching the delayed and overflowed
-		delayed lists if it wraps to 0. */
-		xTickCount = xConstTickCount;
  8003bb0:	4a4a      	ldr	r2, [pc, #296]	; (8003cdc <xTaskIncrementTick+0x148>)
  8003bb2:	693b      	ldr	r3, [r7, #16]
  8003bb4:	6013      	str	r3, [r2, #0]
-
-		if( xConstTickCount == ( TickType_t ) 0U ) /*lint !e774 'if' does not always evaluate to false as it is looking for an overflow. */
  8003bb6:	693b      	ldr	r3, [r7, #16]
  8003bb8:	2b00      	cmp	r3, #0
  8003bba:	d120      	bne.n	8003bfe <xTaskIncrementTick+0x6a>
-		{
-			taskSWITCH_DELAYED_LISTS();
  8003bbc:	4b48      	ldr	r3, [pc, #288]	; (8003ce0 <xTaskIncrementTick+0x14c>)
  8003bbe:	681b      	ldr	r3, [r3, #0]
  8003bc0:	681b      	ldr	r3, [r3, #0]
  8003bc2:	2b00      	cmp	r3, #0
  8003bc4:	d00a      	beq.n	8003bdc <xTaskIncrementTick+0x48>
-	__asm volatile
  8003bc6:	f04f 0350 	mov.w	r3, #80	; 0x50
  8003bca:	f383 8811 	msr	BASEPRI, r3
  8003bce:	f3bf 8f6f 	isb	sy
  8003bd2:	f3bf 8f4f 	dsb	sy
  8003bd6:	603b      	str	r3, [r7, #0]
-}
  8003bd8:	bf00      	nop
  8003bda:	e7fe      	b.n	8003bda <xTaskIncrementTick+0x46>
  8003bdc:	4b40      	ldr	r3, [pc, #256]	; (8003ce0 <xTaskIncrementTick+0x14c>)
@@ -10126,99 +9418,48 @@ BaseType_t xSwitchRequired = pdFALSE;
  8003bf6:	4a3c      	ldr	r2, [pc, #240]	; (8003ce8 <xTaskIncrementTick+0x154>)
  8003bf8:	6013      	str	r3, [r2, #0]
  8003bfa:	f000 f975 	bl	8003ee8 <prvResetNextTaskUnblockTime>
-
-		/* See if this tick has made a timeout expire.  Tasks are stored in
-		the	queue in the order of their wake time - meaning once one task
-		has been found whose block time has not expired there is no need to
-		look any further down the list. */
-		if( xConstTickCount >= xNextTaskUnblockTime )
  8003bfe:	4b3b      	ldr	r3, [pc, #236]	; (8003cec <xTaskIncrementTick+0x158>)
  8003c00:	681b      	ldr	r3, [r3, #0]
  8003c02:	693a      	ldr	r2, [r7, #16]
  8003c04:	429a      	cmp	r2, r3
  8003c06:	d348      	bcc.n	8003c9a <xTaskIncrementTick+0x106>
-		{
-			for( ;; )
-			{
-				if( listLIST_IS_EMPTY( pxDelayedTaskList ) != pdFALSE )
  8003c08:	4b35      	ldr	r3, [pc, #212]	; (8003ce0 <xTaskIncrementTick+0x14c>)
  8003c0a:	681b      	ldr	r3, [r3, #0]
  8003c0c:	681b      	ldr	r3, [r3, #0]
  8003c0e:	2b00      	cmp	r3, #0
  8003c10:	d104      	bne.n	8003c1c <xTaskIncrementTick+0x88>
-					/* The delayed list is empty.  Set xNextTaskUnblockTime
-					to the maximum possible value so it is extremely
-					unlikely that the
-					if( xTickCount >= xNextTaskUnblockTime ) test will pass
-					next time through. */
-					xNextTaskUnblockTime = portMAX_DELAY; /*lint !e961 MISRA exception as the casts are only redundant for some ports. */
  8003c12:	4b36      	ldr	r3, [pc, #216]	; (8003cec <xTaskIncrementTick+0x158>)
  8003c14:	f04f 32ff 	mov.w	r2, #4294967295
  8003c18:	601a      	str	r2, [r3, #0]
-					break;
  8003c1a:	e03e      	b.n	8003c9a <xTaskIncrementTick+0x106>
-				{
-					/* The delayed list is not empty, get the value of the
-					item at the head of the delayed list.  This is the time
-					at which the task at the head of the delayed list must
-					be removed from the Blocked state. */
-					pxTCB = listGET_OWNER_OF_HEAD_ENTRY( pxDelayedTaskList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
  8003c1c:	4b30      	ldr	r3, [pc, #192]	; (8003ce0 <xTaskIncrementTick+0x14c>)
  8003c1e:	681b      	ldr	r3, [r3, #0]
  8003c20:	68db      	ldr	r3, [r3, #12]
  8003c22:	68db      	ldr	r3, [r3, #12]
  8003c24:	60bb      	str	r3, [r7, #8]
-					xItemValue = listGET_LIST_ITEM_VALUE( &( pxTCB->xStateListItem ) );
  8003c26:	68bb      	ldr	r3, [r7, #8]
  8003c28:	685b      	ldr	r3, [r3, #4]
  8003c2a:	607b      	str	r3, [r7, #4]
-
-					if( xConstTickCount < xItemValue )
  8003c2c:	693a      	ldr	r2, [r7, #16]
  8003c2e:	687b      	ldr	r3, [r7, #4]
  8003c30:	429a      	cmp	r2, r3
  8003c32:	d203      	bcs.n	8003c3c <xTaskIncrementTick+0xa8>
-						/* It is not time to unblock this item yet, but the
-						item value is the time at which the task at the head
-						of the blocked list must be removed from the Blocked
-						state -	so record the item value in
-						xNextTaskUnblockTime. */
-						xNextTaskUnblockTime = xItemValue;
  8003c34:	4a2d      	ldr	r2, [pc, #180]	; (8003cec <xTaskIncrementTick+0x158>)
  8003c36:	687b      	ldr	r3, [r7, #4]
  8003c38:	6013      	str	r3, [r2, #0]
-						break; /*lint !e9011 Code structure here is deedmed easier to understand with multiple breaks. */
  8003c3a:	e02e      	b.n	8003c9a <xTaskIncrementTick+0x106>
-					{
-						mtCOVERAGE_TEST_MARKER();
-					}
-
-					/* It is time to remove the item from the Blocked state. */
-					( void ) uxListRemove( &( pxTCB->xStateListItem ) );
  8003c3c:	68bb      	ldr	r3, [r7, #8]
  8003c3e:	3304      	adds	r3, #4
  8003c40:	4618      	mov	r0, r3
  8003c42:	f7ff fd25 	bl	8003690 <uxListRemove>
-
-					/* Is the task waiting on an event also?  If so remove
-					it from the event list. */
-					if( listLIST_ITEM_CONTAINER( &( pxTCB->xEventListItem ) ) != NULL )
  8003c46:	68bb      	ldr	r3, [r7, #8]
  8003c48:	6a9b      	ldr	r3, [r3, #40]	; 0x28
  8003c4a:	2b00      	cmp	r3, #0
  8003c4c:	d004      	beq.n	8003c58 <xTaskIncrementTick+0xc4>
-					{
-						( void ) uxListRemove( &( pxTCB->xEventListItem ) );
  8003c4e:	68bb      	ldr	r3, [r7, #8]
  8003c50:	3318      	adds	r3, #24
  8003c52:	4618      	mov	r0, r3
  8003c54:	f7ff fd1c 	bl	8003690 <uxListRemove>
-						mtCOVERAGE_TEST_MARKER();
-					}
-
-					/* Place the unblocked task into the appropriate ready
-					list. */
-					prvAddTaskToReadyList( pxTCB );
  8003c58:	68bb      	ldr	r3, [r7, #8]
  8003c5a:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  8003c5c:	2201      	movs	r2, #1
@@ -10241,12 +9482,6 @@ BaseType_t xSwitchRequired = pdFALSE;
  8003c7e:	4619      	mov	r1, r3
  8003c80:	4610      	mov	r0, r2
  8003c82:	f7ff fca8 	bl	80035d6 <vListInsertEnd>
-					{
-						/* Preemption is on, but a context switch should
-						only be performed if the unblocked task has a
-						priority that is equal to or higher than the
-						currently executing task. */
-						if( pxTCB->uxPriority >= pxCurrentTCB->uxPriority )
  8003c86:	68bb      	ldr	r3, [r7, #8]
  8003c88:	6ada      	ldr	r2, [r3, #44]	; 0x2c
  8003c8a:	4b1b      	ldr	r3, [pc, #108]	; (8003cf8 <xTaskIncrementTick+0x164>)
@@ -10254,18 +9489,9 @@ BaseType_t xSwitchRequired = pdFALSE;
  8003c8e:	6adb      	ldr	r3, [r3, #44]	; 0x2c
  8003c90:	429a      	cmp	r2, r3
  8003c92:	d3b9      	bcc.n	8003c08 <xTaskIncrementTick+0x74>
-						{
-							xSwitchRequired = pdTRUE;
  8003c94:	2301      	movs	r3, #1
  8003c96:	617b      	str	r3, [r7, #20]
-				if( listLIST_IS_EMPTY( pxDelayedTaskList ) != pdFALSE )
  8003c98:	e7b6      	b.n	8003c08 <xTaskIncrementTick+0x74>
-		/* Tasks of equal priority to the currently running task will share
-		processing time (time slice) if preemption is on, and the application
-		writer has not explicitly turned time slicing off. */
-		#if ( ( configUSE_PREEMPTION == 1 ) && ( configUSE_TIME_SLICING == 1 ) )
-		{
-			if( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ pxCurrentTCB->uxPriority ] ) ) > ( UBaseType_t ) 1 )
  8003c9a:	4b17      	ldr	r3, [pc, #92]	; (8003cf8 <xTaskIncrementTick+0x164>)
  8003c9c:	681b      	ldr	r3, [r3, #0]
  8003c9e:	6ada      	ldr	r2, [r3, #44]	; 0x2c
@@ -10278,44 +9504,21 @@ BaseType_t xSwitchRequired = pdFALSE;
  8003cac:	681b      	ldr	r3, [r3, #0]
  8003cae:	2b01      	cmp	r3, #1
  8003cb0:	d901      	bls.n	8003cb6 <xTaskIncrementTick+0x122>
-			{
-				xSwitchRequired = pdTRUE;
  8003cb2:	2301      	movs	r3, #1
  8003cb4:	617b      	str	r3, [r7, #20]
-		}
-		#endif /* configUSE_TICK_HOOK */
-
-		#if ( configUSE_PREEMPTION == 1 )
-		{
-			if( xYieldPending != pdFALSE )
  8003cb6:	4b11      	ldr	r3, [pc, #68]	; (8003cfc <xTaskIncrementTick+0x168>)
  8003cb8:	681b      	ldr	r3, [r3, #0]
  8003cba:	2b00      	cmp	r3, #0
  8003cbc:	d007      	beq.n	8003cce <xTaskIncrementTick+0x13a>
-			{
-				xSwitchRequired = pdTRUE;
  8003cbe:	2301      	movs	r3, #1
  8003cc0:	617b      	str	r3, [r7, #20]
  8003cc2:	e004      	b.n	8003cce <xTaskIncrementTick+0x13a>
-		}
-		#endif /* configUSE_PREEMPTION */
-	}
-	else
-	{
-		++xPendedTicks;
  8003cc4:	4b0e      	ldr	r3, [pc, #56]	; (8003d00 <xTaskIncrementTick+0x16c>)
  8003cc6:	681b      	ldr	r3, [r3, #0]
  8003cc8:	3301      	adds	r3, #1
  8003cca:	4a0d      	ldr	r2, [pc, #52]	; (8003d00 <xTaskIncrementTick+0x16c>)
  8003ccc:	6013      	str	r3, [r2, #0]
-			vApplicationTickHook();
-		}
-		#endif
-	}
-
-	return xSwitchRequired;
  8003cce:	697b      	ldr	r3, [r7, #20]
-}
  8003cd0:	4618      	mov	r0, r3
  8003cd2:	3718      	adds	r7, #24
  8003cd4:	46bd      	mov	sp, r7
@@ -10333,47 +9536,26 @@ BaseType_t xSwitchRequired = pdFALSE;
  8003d00:	20000288 	.word	0x20000288
 
 08003d04 <vTaskSwitchContext>:
-
-#endif /* configUSE_APPLICATION_TASK_TAG */
-/*-----------------------------------------------------------*/
-
-void vTaskSwitchContext( void )
-{
  8003d04:	b480      	push	{r7}
  8003d06:	b087      	sub	sp, #28
  8003d08:	af00      	add	r7, sp, #0
-	if( uxSchedulerSuspended != ( UBaseType_t ) pdFALSE )
  8003d0a:	4b27      	ldr	r3, [pc, #156]	; (8003da8 <vTaskSwitchContext+0xa4>)
  8003d0c:	681b      	ldr	r3, [r3, #0]
  8003d0e:	2b00      	cmp	r3, #0
  8003d10:	d003      	beq.n	8003d1a <vTaskSwitchContext+0x16>
-	{
-		/* The scheduler is currently suspended - do not allow a context
-		switch. */
-		xYieldPending = pdTRUE;
  8003d12:	4b26      	ldr	r3, [pc, #152]	; (8003dac <vTaskSwitchContext+0xa8>)
  8003d14:	2201      	movs	r2, #1
  8003d16:	601a      	str	r2, [r3, #0]
-			for additional information. */
-			_impure_ptr = &( pxCurrentTCB->xNewLib_reent );
-		}
-		#endif /* configUSE_NEWLIB_REENTRANT */
-	}
-}
  8003d18:	e03f      	b.n	8003d9a <vTaskSwitchContext+0x96>
-		xYieldPending = pdFALSE;
  8003d1a:	4b24      	ldr	r3, [pc, #144]	; (8003dac <vTaskSwitchContext+0xa8>)
  8003d1c:	2200      	movs	r2, #0
  8003d1e:	601a      	str	r2, [r3, #0]
-		taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
  8003d20:	4b23      	ldr	r3, [pc, #140]	; (8003db0 <vTaskSwitchContext+0xac>)
  8003d22:	681b      	ldr	r3, [r3, #0]
  8003d24:	60fb      	str	r3, [r7, #12]
-		__asm volatile ( "clz %0, %1" : "=r" ( ucReturn ) : "r" ( ulBitmap ) : "memory" );
  8003d26:	68fb      	ldr	r3, [r7, #12]
  8003d28:	fab3 f383 	clz	r3, r3
  8003d2c:	72fb      	strb	r3, [r7, #11]
-		return ucReturn;
  8003d2e:	7afb      	ldrb	r3, [r7, #11]
  8003d30:	f1c3 031f 	rsb	r3, r3, #31
  8003d34:	617b      	str	r3, [r7, #20]
@@ -10387,13 +9569,11 @@ void vTaskSwitchContext( void )
  8003d44:	681b      	ldr	r3, [r3, #0]
  8003d46:	2b00      	cmp	r3, #0
  8003d48:	d10a      	bne.n	8003d60 <vTaskSwitchContext+0x5c>
-	__asm volatile
  8003d4a:	f04f 0350 	mov.w	r3, #80	; 0x50
  8003d4e:	f383 8811 	msr	BASEPRI, r3
  8003d52:	f3bf 8f6f 	isb	sy
  8003d56:	f3bf 8f4f 	dsb	sy
  8003d5a:	607b      	str	r3, [r7, #4]
-}
  8003d5c:	bf00      	nop
  8003d5e:	e7fe      	b.n	8003d5e <vTaskSwitchContext+0x5a>
  8003d60:	697a      	ldr	r2, [r7, #20]
@@ -10425,7 +9605,6 @@ void vTaskSwitchContext( void )
  8003d94:	68db      	ldr	r3, [r3, #12]
  8003d96:	4a08      	ldr	r2, [pc, #32]	; (8003db8 <vTaskSwitchContext+0xb4>)
  8003d98:	6013      	str	r3, [r2, #0]
-}
  8003d9a:	bf00      	nop
  8003d9c:	371c      	adds	r7, #28
  8003d9e:	46bd      	mov	sp, r7
@@ -10439,64 +9618,32 @@ void vTaskSwitchContext( void )
  8003db8:	20000178 	.word	0x20000178
 
 08003dbc <prvIdleTask>:
- *
- * void prvIdleTask( void *pvParameters );
- *
- */
-static portTASK_FUNCTION( prvIdleTask, pvParameters )
-{
  8003dbc:	b580      	push	{r7, lr}
  8003dbe:	b082      	sub	sp, #8
  8003dc0:	af00      	add	r7, sp, #0
  8003dc2:	6078      	str	r0, [r7, #4]
-
-	for( ;; )
-	{
-		/* See if any tasks have deleted themselves - if so then the idle task
-		is responsible for freeing the deleted task's TCB and stack. */
-		prvCheckTasksWaitingTermination();
  8003dc4:	f000 f852 	bl	8003e6c <prvCheckTasksWaitingTermination>
-
-			A critical region is not required here as we are just reading from
-			the list, and an occasional incorrect value will not matter.  If
-			the ready list at the idle priority contains more than one task
-			then a task other than the idle task is ready to execute. */
-			if( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ tskIDLE_PRIORITY ] ) ) > ( UBaseType_t ) 1 )
  8003dc8:	4b06      	ldr	r3, [pc, #24]	; (8003de4 <prvIdleTask+0x28>)
  8003dca:	681b      	ldr	r3, [r3, #0]
  8003dcc:	2b01      	cmp	r3, #1
  8003dce:	d9f9      	bls.n	8003dc4 <prvIdleTask+0x8>
-			{
-				taskYIELD();
  8003dd0:	4b05      	ldr	r3, [pc, #20]	; (8003de8 <prvIdleTask+0x2c>)
  8003dd2:	f04f 5280 	mov.w	r2, #268435456	; 0x10000000
  8003dd6:	601a      	str	r2, [r3, #0]
  8003dd8:	f3bf 8f4f 	dsb	sy
  8003ddc:	f3bf 8f6f 	isb	sy
-		prvCheckTasksWaitingTermination();
  8003de0:	e7f0      	b.n	8003dc4 <prvIdleTask+0x8>
  8003de2:	bf00      	nop
  8003de4:	2000017c 	.word	0x2000017c
  8003de8:	e000ed04 	.word	0xe000ed04
 
 08003dec <prvInitialiseTaskLists>:
-
-#endif /* portUSING_MPU_WRAPPERS */
-/*-----------------------------------------------------------*/
-
-static void prvInitialiseTaskLists( void )
-{
  8003dec:	b580      	push	{r7, lr}
  8003dee:	b082      	sub	sp, #8
  8003df0:	af00      	add	r7, sp, #0
-UBaseType_t uxPriority;
-
-	for( uxPriority = ( UBaseType_t ) 0U; uxPriority < ( UBaseType_t ) configMAX_PRIORITIES; uxPriority++ )
  8003df2:	2300      	movs	r3, #0
  8003df4:	607b      	str	r3, [r7, #4]
  8003df6:	e00c      	b.n	8003e12 <prvInitialiseTaskLists+0x26>
-	{
-		vListInitialise( &( pxReadyTasksLists[ uxPriority ] ) );
  8003df8:	687a      	ldr	r2, [r7, #4]
  8003dfa:	4613      	mov	r3, r2
  8003dfc:	009b      	lsls	r3, r3, #2
@@ -10506,52 +9653,28 @@ UBaseType_t uxPriority;
  8003e04:	4413      	add	r3, r2
  8003e06:	4618      	mov	r0, r3
  8003e08:	f7ff fbb8 	bl	800357c <vListInitialise>
-	for( uxPriority = ( UBaseType_t ) 0U; uxPriority < ( UBaseType_t ) configMAX_PRIORITIES; uxPriority++ )
  8003e0c:	687b      	ldr	r3, [r7, #4]
  8003e0e:	3301      	adds	r3, #1
  8003e10:	607b      	str	r3, [r7, #4]
  8003e12:	687b      	ldr	r3, [r7, #4]
  8003e14:	2b06      	cmp	r3, #6
  8003e16:	d9ef      	bls.n	8003df8 <prvInitialiseTaskLists+0xc>
-	}
-
-	vListInitialise( &xDelayedTaskList1 );
  8003e18:	480d      	ldr	r0, [pc, #52]	; (8003e50 <prvInitialiseTaskLists+0x64>)
  8003e1a:	f7ff fbaf 	bl	800357c <vListInitialise>
-	vListInitialise( &xDelayedTaskList2 );
  8003e1e:	480d      	ldr	r0, [pc, #52]	; (8003e54 <prvInitialiseTaskLists+0x68>)
  8003e20:	f7ff fbac 	bl	800357c <vListInitialise>
-	vListInitialise( &xPendingReadyList );
  8003e24:	480c      	ldr	r0, [pc, #48]	; (8003e58 <prvInitialiseTaskLists+0x6c>)
  8003e26:	f7ff fba9 	bl	800357c <vListInitialise>
-
-	#if ( INCLUDE_vTaskDelete == 1 )
-	{
-		vListInitialise( &xTasksWaitingTermination );
  8003e2a:	480c      	ldr	r0, [pc, #48]	; (8003e5c <prvInitialiseTaskLists+0x70>)
  8003e2c:	f7ff fba6 	bl	800357c <vListInitialise>
-	}
-	#endif /* INCLUDE_vTaskDelete */
-
-	#if ( INCLUDE_vTaskSuspend == 1 )
-	{
-		vListInitialise( &xSuspendedTaskList );
  8003e30:	480b      	ldr	r0, [pc, #44]	; (8003e60 <prvInitialiseTaskLists+0x74>)
  8003e32:	f7ff fba3 	bl	800357c <vListInitialise>
-	}
-	#endif /* INCLUDE_vTaskSuspend */
-
-	/* Start with pxDelayedTaskList using list1 and the pxOverflowDelayedTaskList
-	using list2. */
-	pxDelayedTaskList = &xDelayedTaskList1;
  8003e36:	4b0b      	ldr	r3, [pc, #44]	; (8003e64 <prvInitialiseTaskLists+0x78>)
  8003e38:	4a05      	ldr	r2, [pc, #20]	; (8003e50 <prvInitialiseTaskLists+0x64>)
  8003e3a:	601a      	str	r2, [r3, #0]
-	pxOverflowDelayedTaskList = &xDelayedTaskList2;
  8003e3c:	4b0a      	ldr	r3, [pc, #40]	; (8003e68 <prvInitialiseTaskLists+0x7c>)
  8003e3e:	4a05      	ldr	r2, [pc, #20]	; (8003e54 <prvInitialiseTaskLists+0x68>)
  8003e40:	601a      	str	r2, [r3, #0]
-}
  8003e42:	bf00      	nop
  8003e44:	3708      	adds	r7, #8
  8003e46:	46bd      	mov	sp, r7
@@ -10567,62 +9690,36 @@ UBaseType_t uxPriority;
  8003e68:	20000234 	.word	0x20000234
 
 08003e6c <prvCheckTasksWaitingTermination>:
-/*-----------------------------------------------------------*/
-
-static void prvCheckTasksWaitingTermination( void )
-{
  8003e6c:	b580      	push	{r7, lr}
  8003e6e:	b082      	sub	sp, #8
  8003e70:	af00      	add	r7, sp, #0
-	{
-		TCB_t *pxTCB;
-
-		/* uxDeletedTasksWaitingCleanUp is used to prevent taskENTER_CRITICAL()
-		being called too often in the idle task. */
-		while( uxDeletedTasksWaitingCleanUp > ( UBaseType_t ) 0U )
  8003e72:	e019      	b.n	8003ea8 <prvCheckTasksWaitingTermination+0x3c>
-		{
-			taskENTER_CRITICAL();
  8003e74:	f000 fa06 	bl	8004284 <vPortEnterCritical>
-			{
-				pxTCB = listGET_OWNER_OF_HEAD_ENTRY( ( &xTasksWaitingTermination ) ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
  8003e78:	4b10      	ldr	r3, [pc, #64]	; (8003ebc <prvCheckTasksWaitingTermination+0x50>)
  8003e7a:	68db      	ldr	r3, [r3, #12]
  8003e7c:	68db      	ldr	r3, [r3, #12]
  8003e7e:	607b      	str	r3, [r7, #4]
-				( void ) uxListRemove( &( pxTCB->xStateListItem ) );
  8003e80:	687b      	ldr	r3, [r7, #4]
  8003e82:	3304      	adds	r3, #4
  8003e84:	4618      	mov	r0, r3
  8003e86:	f7ff fc03 	bl	8003690 <uxListRemove>
-				--uxCurrentNumberOfTasks;
  8003e8a:	4b0d      	ldr	r3, [pc, #52]	; (8003ec0 <prvCheckTasksWaitingTermination+0x54>)
  8003e8c:	681b      	ldr	r3, [r3, #0]
  8003e8e:	3b01      	subs	r3, #1
  8003e90:	4a0b      	ldr	r2, [pc, #44]	; (8003ec0 <prvCheckTasksWaitingTermination+0x54>)
  8003e92:	6013      	str	r3, [r2, #0]
-				--uxDeletedTasksWaitingCleanUp;
  8003e94:	4b0b      	ldr	r3, [pc, #44]	; (8003ec4 <prvCheckTasksWaitingTermination+0x58>)
  8003e96:	681b      	ldr	r3, [r3, #0]
  8003e98:	3b01      	subs	r3, #1
  8003e9a:	4a0a      	ldr	r2, [pc, #40]	; (8003ec4 <prvCheckTasksWaitingTermination+0x58>)
  8003e9c:	6013      	str	r3, [r2, #0]
-			}
-			taskEXIT_CRITICAL();
  8003e9e:	f000 fa21 	bl	80042e4 <vPortExitCritical>
-
-			prvDeleteTCB( pxTCB );
  8003ea2:	6878      	ldr	r0, [r7, #4]
  8003ea4:	f000 f810 	bl	8003ec8 <prvDeleteTCB>
-		while( uxDeletedTasksWaitingCleanUp > ( UBaseType_t ) 0U )
  8003ea8:	4b06      	ldr	r3, [pc, #24]	; (8003ec4 <prvCheckTasksWaitingTermination+0x58>)
  8003eaa:	681b      	ldr	r3, [r3, #0]
  8003eac:	2b00      	cmp	r3, #0
  8003eae:	d1e1      	bne.n	8003e74 <prvCheckTasksWaitingTermination+0x8>
-		}
-	}
-	#endif /* INCLUDE_vTaskDelete */
-}
  8003eb0:	bf00      	nop
  8003eb2:	bf00      	nop
  8003eb4:	3708      	adds	r7, #8
@@ -10634,86 +9731,43 @@ static void prvCheckTasksWaitingTermination( void )
  8003ec4:	20000260 	.word	0x20000260
 
 08003ec8 <prvDeleteTCB>:
-/*-----------------------------------------------------------*/
-
-#if ( INCLUDE_vTaskDelete == 1 )
-
-	static void prvDeleteTCB( TCB_t *pxTCB )
-	{
  8003ec8:	b580      	push	{r7, lr}
  8003eca:	b082      	sub	sp, #8
  8003ecc:	af00      	add	r7, sp, #0
  8003ece:	6078      	str	r0, [r7, #4]
-
-		#if( ( configSUPPORT_DYNAMIC_ALLOCATION == 1 ) && ( configSUPPORT_STATIC_ALLOCATION == 0 ) && ( portUSING_MPU_WRAPPERS == 0 ) )
-		{
-			/* The task can only have been allocated dynamically - free both
-			the stack and TCB. */
-			vPortFree( pxTCB->pxStack );
  8003ed0:	687b      	ldr	r3, [r7, #4]
  8003ed2:	6b1b      	ldr	r3, [r3, #48]	; 0x30
  8003ed4:	4618      	mov	r0, r3
  8003ed6:	f000 fb83 	bl	80045e0 <vPortFree>
-			vPortFree( pxTCB );
  8003eda:	6878      	ldr	r0, [r7, #4]
  8003edc:	f000 fb80 	bl	80045e0 <vPortFree>
-				configASSERT( pxTCB->ucStaticallyAllocated == tskSTATICALLY_ALLOCATED_STACK_AND_TCB	);
-				mtCOVERAGE_TEST_MARKER();
-			}
-		}
-		#endif /* configSUPPORT_DYNAMIC_ALLOCATION */
-	}
  8003ee0:	bf00      	nop
  8003ee2:	3708      	adds	r7, #8
  8003ee4:	46bd      	mov	sp, r7
  8003ee6:	bd80      	pop	{r7, pc}
 
 08003ee8 <prvResetNextTaskUnblockTime>:
-
-#endif /* INCLUDE_vTaskDelete */
-/*-----------------------------------------------------------*/
-
-static void prvResetNextTaskUnblockTime( void )
-{
  8003ee8:	b480      	push	{r7}
  8003eea:	b083      	sub	sp, #12
  8003eec:	af00      	add	r7, sp, #0
-TCB_t *pxTCB;
-
-	if( listLIST_IS_EMPTY( pxDelayedTaskList ) != pdFALSE )
  8003eee:	4b0c      	ldr	r3, [pc, #48]	; (8003f20 <prvResetNextTaskUnblockTime+0x38>)
  8003ef0:	681b      	ldr	r3, [r3, #0]
  8003ef2:	681b      	ldr	r3, [r3, #0]
  8003ef4:	2b00      	cmp	r3, #0
  8003ef6:	d104      	bne.n	8003f02 <prvResetNextTaskUnblockTime+0x1a>
-	{
-		/* The new current delayed list is empty.  Set xNextTaskUnblockTime to
-		the maximum possible value so it is	extremely unlikely that the
-		if( xTickCount >= xNextTaskUnblockTime ) test will pass until
-		there is an item in the delayed list. */
-		xNextTaskUnblockTime = portMAX_DELAY;
  8003ef8:	4b0a      	ldr	r3, [pc, #40]	; (8003f24 <prvResetNextTaskUnblockTime+0x3c>)
  8003efa:	f04f 32ff 	mov.w	r2, #4294967295
  8003efe:	601a      	str	r2, [r3, #0]
-		which the task at the head of the delayed list should be removed
-		from the Blocked state. */
-		( pxTCB ) = listGET_OWNER_OF_HEAD_ENTRY( pxDelayedTaskList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
-		xNextTaskUnblockTime = listGET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ) );
-	}
-}
  8003f00:	e008      	b.n	8003f14 <prvResetNextTaskUnblockTime+0x2c>
-		( pxTCB ) = listGET_OWNER_OF_HEAD_ENTRY( pxDelayedTaskList ); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
  8003f02:	4b07      	ldr	r3, [pc, #28]	; (8003f20 <prvResetNextTaskUnblockTime+0x38>)
  8003f04:	681b      	ldr	r3, [r3, #0]
  8003f06:	68db      	ldr	r3, [r3, #12]
  8003f08:	68db      	ldr	r3, [r3, #12]
  8003f0a:	607b      	str	r3, [r7, #4]
-		xNextTaskUnblockTime = listGET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ) );
  8003f0c:	687b      	ldr	r3, [r7, #4]
  8003f0e:	685b      	ldr	r3, [r3, #4]
  8003f10:	4a04      	ldr	r2, [pc, #16]	; (8003f24 <prvResetNextTaskUnblockTime+0x3c>)
  8003f12:	6013      	str	r3, [r2, #0]
-}
  8003f14:	bf00      	nop
  8003f16:	370c      	adds	r7, #12
  8003f18:	46bd      	mov	sp, r7
@@ -10723,52 +9777,26 @@ TCB_t *pxTCB;
  8003f24:	20000298 	.word	0x20000298
 
 08003f28 <xTaskGetSchedulerState>:
-/*-----------------------------------------------------------*/
-
-#if ( ( INCLUDE_xTaskGetSchedulerState == 1 ) || ( configUSE_TIMERS == 1 ) )
-
-	BaseType_t xTaskGetSchedulerState( void )
-	{
  8003f28:	b480      	push	{r7}
  8003f2a:	b083      	sub	sp, #12
  8003f2c:	af00      	add	r7, sp, #0
-	BaseType_t xReturn;
-
-		if( xSchedulerRunning == pdFALSE )
  8003f2e:	4b0b      	ldr	r3, [pc, #44]	; (8003f5c <xTaskGetSchedulerState+0x34>)
  8003f30:	681b      	ldr	r3, [r3, #0]
  8003f32:	2b00      	cmp	r3, #0
  8003f34:	d102      	bne.n	8003f3c <xTaskGetSchedulerState+0x14>
-		{
-			xReturn = taskSCHEDULER_NOT_STARTED;
  8003f36:	2301      	movs	r3, #1
  8003f38:	607b      	str	r3, [r7, #4]
  8003f3a:	e008      	b.n	8003f4e <xTaskGetSchedulerState+0x26>
-		}
-		else
-		{
-			if( uxSchedulerSuspended == ( UBaseType_t ) pdFALSE )
  8003f3c:	4b08      	ldr	r3, [pc, #32]	; (8003f60 <xTaskGetSchedulerState+0x38>)
  8003f3e:	681b      	ldr	r3, [r3, #0]
  8003f40:	2b00      	cmp	r3, #0
  8003f42:	d102      	bne.n	8003f4a <xTaskGetSchedulerState+0x22>
-			{
-				xReturn = taskSCHEDULER_RUNNING;
  8003f44:	2302      	movs	r3, #2
  8003f46:	607b      	str	r3, [r7, #4]
  8003f48:	e001      	b.n	8003f4e <xTaskGetSchedulerState+0x26>
-			}
-			else
-			{
-				xReturn = taskSCHEDULER_SUSPENDED;
  8003f4a:	2300      	movs	r3, #0
  8003f4c:	607b      	str	r3, [r7, #4]
-			}
-		}
-
-		return xReturn;
  8003f4e:	687b      	ldr	r3, [r7, #4]
-	}
  8003f50:	4618      	mov	r0, r3
  8003f52:	370c      	adds	r7, #12
  8003f54:	46bd      	mov	sp, r7
@@ -10778,28 +9806,14 @@ TCB_t *pxTCB;
  8003f60:	200002a0 	.word	0x200002a0
 
 08003f64 <prvAddCurrentTaskToDelayedList>:
-
-#endif
-/*-----------------------------------------------------------*/
-
-static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait, const BaseType_t xCanBlockIndefinitely )
-{
  8003f64:	b580      	push	{r7, lr}
  8003f66:	b084      	sub	sp, #16
  8003f68:	af00      	add	r7, sp, #0
  8003f6a:	6078      	str	r0, [r7, #4]
  8003f6c:	6039      	str	r1, [r7, #0]
-TickType_t xTimeToWake;
-const TickType_t xConstTickCount = xTickCount;
  8003f6e:	4b29      	ldr	r3, [pc, #164]	; (8004014 <prvAddCurrentTaskToDelayedList+0xb0>)
  8003f70:	681b      	ldr	r3, [r3, #0]
  8003f72:	60fb      	str	r3, [r7, #12]
-	}
-	#endif
-
-	/* Remove the task from the ready list before adding it to the blocked list
-	as the same list item is used for both lists. */
-	if( uxListRemove( &( pxCurrentTCB->xStateListItem ) ) == ( UBaseType_t ) 0 )
  8003f74:	4b28      	ldr	r3, [pc, #160]	; (8004018 <prvAddCurrentTaskToDelayedList+0xb4>)
  8003f76:	681b      	ldr	r3, [r3, #0]
  8003f78:	3304      	adds	r3, #4
@@ -10808,10 +9822,6 @@ const TickType_t xConstTickCount = xTickCount;
  8003f80:	4603      	mov	r3, r0
  8003f82:	2b00      	cmp	r3, #0
  8003f84:	d10b      	bne.n	8003f9e <prvAddCurrentTaskToDelayedList+0x3a>
-	{
-		/* The current task must be in a ready list, so there is no need to
-		check, and the port reset macro can be called directly. */
-		portRESET_READY_PRIORITY( pxCurrentTCB->uxPriority, uxTopReadyPriority ); /*lint !e931 pxCurrentTCB cannot change as it is the calling task.  pxCurrentTCB->uxPriority and uxTopReadyPriority cannot change as called with scheduler suspended or in a critical section. */
  8003f86:	4b24      	ldr	r3, [pc, #144]	; (8004018 <prvAddCurrentTaskToDelayedList+0xb4>)
  8003f88:	681b      	ldr	r3, [r3, #0]
  8003f8a:	6adb      	ldr	r3, [r3, #44]	; 0x2c
@@ -10823,52 +9833,31 @@ const TickType_t xConstTickCount = xTickCount;
  8003f98:	4013      	ands	r3, r2
  8003f9a:	4a20      	ldr	r2, [pc, #128]	; (800401c <prvAddCurrentTaskToDelayedList+0xb8>)
  8003f9c:	6013      	str	r3, [r2, #0]
-		mtCOVERAGE_TEST_MARKER();
-	}
-
-	#if ( INCLUDE_vTaskSuspend == 1 )
-	{
-		if( ( xTicksToWait == portMAX_DELAY ) && ( xCanBlockIndefinitely != pdFALSE ) )
  8003f9e:	687b      	ldr	r3, [r7, #4]
  8003fa0:	f1b3 3fff 	cmp.w	r3, #4294967295
  8003fa4:	d10a      	bne.n	8003fbc <prvAddCurrentTaskToDelayedList+0x58>
  8003fa6:	683b      	ldr	r3, [r7, #0]
  8003fa8:	2b00      	cmp	r3, #0
  8003faa:	d007      	beq.n	8003fbc <prvAddCurrentTaskToDelayedList+0x58>
-		{
-			/* Add the task to the suspended task list instead of a delayed task
-			list to ensure it is not woken by a timing event.  It will block
-			indefinitely. */
-			vListInsertEnd( &xSuspendedTaskList, &( pxCurrentTCB->xStateListItem ) );
  8003fac:	4b1a      	ldr	r3, [pc, #104]	; (8004018 <prvAddCurrentTaskToDelayedList+0xb4>)
  8003fae:	681b      	ldr	r3, [r3, #0]
  8003fb0:	3304      	adds	r3, #4
  8003fb2:	4619      	mov	r1, r3
  8003fb4:	481a      	ldr	r0, [pc, #104]	; (8004020 <prvAddCurrentTaskToDelayedList+0xbc>)
  8003fb6:	f7ff fb0e 	bl	80035d6 <vListInsertEnd>
-
-		/* Avoid compiler warning when INCLUDE_vTaskSuspend is not 1. */
-		( void ) xCanBlockIndefinitely;
-	}
-	#endif /* INCLUDE_vTaskSuspend */
-}
  8003fba:	e026      	b.n	800400a <prvAddCurrentTaskToDelayedList+0xa6>
-			xTimeToWake = xConstTickCount + xTicksToWait;
  8003fbc:	68fa      	ldr	r2, [r7, #12]
  8003fbe:	687b      	ldr	r3, [r7, #4]
  8003fc0:	4413      	add	r3, r2
  8003fc2:	60bb      	str	r3, [r7, #8]
-			listSET_LIST_ITEM_VALUE( &( pxCurrentTCB->xStateListItem ), xTimeToWake );
  8003fc4:	4b14      	ldr	r3, [pc, #80]	; (8004018 <prvAddCurrentTaskToDelayedList+0xb4>)
  8003fc6:	681b      	ldr	r3, [r3, #0]
  8003fc8:	68ba      	ldr	r2, [r7, #8]
  8003fca:	605a      	str	r2, [r3, #4]
-			if( xTimeToWake < xConstTickCount )
  8003fcc:	68ba      	ldr	r2, [r7, #8]
  8003fce:	68fb      	ldr	r3, [r7, #12]
  8003fd0:	429a      	cmp	r2, r3
  8003fd2:	d209      	bcs.n	8003fe8 <prvAddCurrentTaskToDelayedList+0x84>
-				vListInsert( pxOverflowDelayedTaskList, &( pxCurrentTCB->xStateListItem ) );
  8003fd4:	4b13      	ldr	r3, [pc, #76]	; (8004024 <prvAddCurrentTaskToDelayedList+0xc0>)
  8003fd6:	681a      	ldr	r2, [r3, #0]
  8003fd8:	4b0f      	ldr	r3, [pc, #60]	; (8004018 <prvAddCurrentTaskToDelayedList+0xb4>)
@@ -10877,9 +9866,7 @@ const TickType_t xConstTickCount = xTickCount;
  8003fde:	4619      	mov	r1, r3
  8003fe0:	4610      	mov	r0, r2
  8003fe2:	f7ff fb1c 	bl	800361e <vListInsert>
-}
  8003fe6:	e010      	b.n	800400a <prvAddCurrentTaskToDelayedList+0xa6>
-				vListInsert( pxDelayedTaskList, &( pxCurrentTCB->xStateListItem ) );
  8003fe8:	4b0f      	ldr	r3, [pc, #60]	; (8004028 <prvAddCurrentTaskToDelayedList+0xc4>)
  8003fea:	681a      	ldr	r2, [r3, #0]
  8003fec:	4b0a      	ldr	r3, [pc, #40]	; (8004018 <prvAddCurrentTaskToDelayedList+0xb4>)
@@ -10888,17 +9875,14 @@ const TickType_t xConstTickCount = xTickCount;
  8003ff2:	4619      	mov	r1, r3
  8003ff4:	4610      	mov	r0, r2
  8003ff6:	f7ff fb12 	bl	800361e <vListInsert>
-				if( xTimeToWake < xNextTaskUnblockTime )
  8003ffa:	4b0c      	ldr	r3, [pc, #48]	; (800402c <prvAddCurrentTaskToDelayedList+0xc8>)
  8003ffc:	681b      	ldr	r3, [r3, #0]
  8003ffe:	68ba      	ldr	r2, [r7, #8]
  8004000:	429a      	cmp	r2, r3
  8004002:	d202      	bcs.n	800400a <prvAddCurrentTaskToDelayedList+0xa6>
-					xNextTaskUnblockTime = xTimeToWake;
  8004004:	4a09      	ldr	r2, [pc, #36]	; (800402c <prvAddCurrentTaskToDelayedList+0xc8>)
  8004006:	68bb      	ldr	r3, [r7, #8]
  8004008:	6013      	str	r3, [r2, #0]
-}
  800400a:	bf00      	nop
  800400c:	3710      	adds	r7, #16
  800400e:	46bd      	mov	sp, r7
@@ -10913,79 +9897,47 @@ const TickType_t xConstTickCount = xTickCount;
  800402c:	20000298 	.word	0x20000298
 
 08004030 <pxPortInitialiseStack>:
-
-/*
- * See header file for description.
- */
-StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters )
-{
  8004030:	b480      	push	{r7}
  8004032:	b085      	sub	sp, #20
  8004034:	af00      	add	r7, sp, #0
  8004036:	60f8      	str	r0, [r7, #12]
  8004038:	60b9      	str	r1, [r7, #8]
  800403a:	607a      	str	r2, [r7, #4]
-	/* Simulate the stack frame as it would be created by a context switch
-	interrupt. */
-
-	/* Offset added to account for the way the MCU uses the stack on entry/exit
-	of interrupts, and to ensure alignment. */
-	pxTopOfStack--;
  800403c:	68fb      	ldr	r3, [r7, #12]
  800403e:	3b04      	subs	r3, #4
  8004040:	60fb      	str	r3, [r7, #12]
-
-	*pxTopOfStack = portINITIAL_XPSR;	/* xPSR */
  8004042:	68fb      	ldr	r3, [r7, #12]
  8004044:	f04f 7280 	mov.w	r2, #16777216	; 0x1000000
  8004048:	601a      	str	r2, [r3, #0]
-	pxTopOfStack--;
  800404a:	68fb      	ldr	r3, [r7, #12]
  800404c:	3b04      	subs	r3, #4
  800404e:	60fb      	str	r3, [r7, #12]
-	*pxTopOfStack = ( ( StackType_t ) pxCode ) & portSTART_ADDRESS_MASK;	/* PC */
  8004050:	68bb      	ldr	r3, [r7, #8]
  8004052:	f023 0201 	bic.w	r2, r3, #1
  8004056:	68fb      	ldr	r3, [r7, #12]
  8004058:	601a      	str	r2, [r3, #0]
-	pxTopOfStack--;
  800405a:	68fb      	ldr	r3, [r7, #12]
  800405c:	3b04      	subs	r3, #4
  800405e:	60fb      	str	r3, [r7, #12]
-	*pxTopOfStack = ( StackType_t ) portTASK_RETURN_ADDRESS;	/* LR */
  8004060:	4a0c      	ldr	r2, [pc, #48]	; (8004094 <pxPortInitialiseStack+0x64>)
  8004062:	68fb      	ldr	r3, [r7, #12]
  8004064:	601a      	str	r2, [r3, #0]
-
-	/* Save code space by skipping register initialisation. */
-	pxTopOfStack -= 5;	/* R12, R3, R2 and R1. */
  8004066:	68fb      	ldr	r3, [r7, #12]
  8004068:	3b14      	subs	r3, #20
  800406a:	60fb      	str	r3, [r7, #12]
-	*pxTopOfStack = ( StackType_t ) pvParameters;	/* R0 */
  800406c:	687a      	ldr	r2, [r7, #4]
  800406e:	68fb      	ldr	r3, [r7, #12]
  8004070:	601a      	str	r2, [r3, #0]
-
-	/* A save method is being used that requires each task to maintain its
-	own exec return value. */
-	pxTopOfStack--;
  8004072:	68fb      	ldr	r3, [r7, #12]
  8004074:	3b04      	subs	r3, #4
  8004076:	60fb      	str	r3, [r7, #12]
-	*pxTopOfStack = portINITIAL_EXC_RETURN;
  8004078:	68fb      	ldr	r3, [r7, #12]
  800407a:	f06f 0202 	mvn.w	r2, #2
  800407e:	601a      	str	r2, [r3, #0]
-
-	pxTopOfStack -= 8;	/* R11, R10, R9, R8, R7, R6, R5 and R4. */
  8004080:	68fb      	ldr	r3, [r7, #12]
  8004082:	3b20      	subs	r3, #32
  8004084:	60fb      	str	r3, [r7, #12]
-
-	return pxTopOfStack;
  8004086:	68fb      	ldr	r3, [r7, #12]
-}
  8004088:	4618      	mov	r0, r3
  800408a:	3714      	adds	r7, #20
  800408c:	46bd      	mov	sp, r7
@@ -10994,55 +9946,32 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
  8004094:	08004099 	.word	0x08004099
 
 08004098 <prvTaskExitError>:
-/*-----------------------------------------------------------*/
-
-static void prvTaskExitError( void )
-{
  8004098:	b480      	push	{r7}
  800409a:	b085      	sub	sp, #20
  800409c:	af00      	add	r7, sp, #0
-volatile uint32_t ulDummy = 0;
  800409e:	2300      	movs	r3, #0
  80040a0:	607b      	str	r3, [r7, #4]
-	its caller as there is nothing to return to.  If a task wants to exit it
-	should instead call vTaskDelete( NULL ).
-
-	Artificially force an assert() to be triggered if configASSERT() is
-	defined, then stop here so application writers can catch the error. */
-	configASSERT( uxCriticalNesting == ~0UL );
  80040a2:	4b12      	ldr	r3, [pc, #72]	; (80040ec <prvTaskExitError+0x54>)
  80040a4:	681b      	ldr	r3, [r3, #0]
  80040a6:	f1b3 3fff 	cmp.w	r3, #4294967295
  80040aa:	d00a      	beq.n	80040c2 <prvTaskExitError+0x2a>
-	__asm volatile
  80040ac:	f04f 0350 	mov.w	r3, #80	; 0x50
  80040b0:	f383 8811 	msr	BASEPRI, r3
  80040b4:	f3bf 8f6f 	isb	sy
  80040b8:	f3bf 8f4f 	dsb	sy
  80040bc:	60fb      	str	r3, [r7, #12]
-}
  80040be:	bf00      	nop
  80040c0:	e7fe      	b.n	80040c0 <prvTaskExitError+0x28>
-	__asm volatile
  80040c2:	f04f 0350 	mov.w	r3, #80	; 0x50
  80040c6:	f383 8811 	msr	BASEPRI, r3
  80040ca:	f3bf 8f6f 	isb	sy
  80040ce:	f3bf 8f4f 	dsb	sy
  80040d2:	60bb      	str	r3, [r7, #8]
-}
  80040d4:	bf00      	nop
-	portDISABLE_INTERRUPTS();
-	while( ulDummy == 0 )
  80040d6:	bf00      	nop
  80040d8:	687b      	ldr	r3, [r7, #4]
  80040da:	2b00      	cmp	r3, #0
  80040dc:	d0fc      	beq.n	80040d8 <prvTaskExitError+0x40>
-		about code appearing after this function is called - making ulDummy
-		volatile makes the compiler think the function could return and
-		therefore not output an 'unreachable code' warning for code that appears
-		after it. */
-	}
-}
  80040de:	bf00      	nop
  80040e0:	bf00      	nop
  80040e2:	3714      	adds	r7, #20
@@ -11052,11 +9981,6 @@ volatile uint32_t ulDummy = 0;
  80040ec:	2000000c 	.word	0x2000000c
 
 080040f0 <SVC_Handler>:
-/*-----------------------------------------------------------*/
-
-void vPortSVCHandler( void )
-{
-	__asm volatile (
  80040f0:	4b07      	ldr	r3, [pc, #28]	; (8004110 <pxCurrentTCBConst2>)
  80040f2:	6819      	ldr	r1, [r3, #0]
  80040f4:	6808      	ldr	r0, [r1, #0]
@@ -11070,22 +9994,10 @@ void vPortSVCHandler( void )
 
 08004110 <pxCurrentTCBConst2>:
  8004110:	20000178 	.word	0x20000178
-					"	bx r14							\n"
-					"									\n"
-					"	.align 4						\n"
-					"pxCurrentTCBConst2: .word pxCurrentTCB				\n"
-				);
-}
  8004114:	bf00      	nop
  8004116:	bf00      	nop
 
 08004118 <prvPortStartFirstTask>:
-{
-	/* Start the first task.  This also clears the bit that indicates the FPU is
-	in use in case the FPU was used before the scheduler was started - which
-	would otherwise result in the unnecessary leaving of space in the SVC stack
-	for lazy saving of FPU registers. */
-	__asm volatile(
  8004118:	4808      	ldr	r0, [pc, #32]	; (800413c <prvPortStartFirstTask+0x24>)
  800411a:	6800      	ldr	r0, [r0, #0]
  800411c:	6800      	ldr	r0, [r0, #0]
@@ -11098,230 +10010,125 @@ void vPortSVCHandler( void )
  8004132:	f3bf 8f6f 	isb	sy
  8004136:	df00      	svc	0
  8004138:	bf00      	nop
-					" dsb					\n"
-					" isb					\n"
-					" svc 0					\n" /* System call to start first task. */
-					" nop					\n"
-				);
-}
  800413a:	bf00      	nop
  800413c:	e000ed08 	.word	0xe000ed08
 
 08004140 <xPortStartScheduler>:
-
-/*
- * See header file for description.
- */
-BaseType_t xPortStartScheduler( void )
-{
  8004140:	b580      	push	{r7, lr}
  8004142:	b086      	sub	sp, #24
  8004144:	af00      	add	r7, sp, #0
-	configASSERT( configMAX_SYSCALL_INTERRUPT_PRIORITY );
-
-	/* This port can be used on all revisions of the Cortex-M7 core other than
-	the r0p1 parts.  r0p1 parts should use the port from the
-	/source/portable/GCC/ARM_CM7/r0p1 directory. */
-	configASSERT( portCPUID != portCORTEX_M7_r0p1_ID );
  8004146:	4b46      	ldr	r3, [pc, #280]	; (8004260 <xPortStartScheduler+0x120>)
  8004148:	681b      	ldr	r3, [r3, #0]
  800414a:	4a46      	ldr	r2, [pc, #280]	; (8004264 <xPortStartScheduler+0x124>)
  800414c:	4293      	cmp	r3, r2
  800414e:	d10a      	bne.n	8004166 <xPortStartScheduler+0x26>
-	__asm volatile
  8004150:	f04f 0350 	mov.w	r3, #80	; 0x50
  8004154:	f383 8811 	msr	BASEPRI, r3
  8004158:	f3bf 8f6f 	isb	sy
  800415c:	f3bf 8f4f 	dsb	sy
  8004160:	613b      	str	r3, [r7, #16]
-}
  8004162:	bf00      	nop
  8004164:	e7fe      	b.n	8004164 <xPortStartScheduler+0x24>
-	configASSERT( portCPUID != portCORTEX_M7_r0p0_ID );
  8004166:	4b3e      	ldr	r3, [pc, #248]	; (8004260 <xPortStartScheduler+0x120>)
  8004168:	681b      	ldr	r3, [r3, #0]
  800416a:	4a3f      	ldr	r2, [pc, #252]	; (8004268 <xPortStartScheduler+0x128>)
  800416c:	4293      	cmp	r3, r2
  800416e:	d10a      	bne.n	8004186 <xPortStartScheduler+0x46>
-	__asm volatile
  8004170:	f04f 0350 	mov.w	r3, #80	; 0x50
  8004174:	f383 8811 	msr	BASEPRI, r3
  8004178:	f3bf 8f6f 	isb	sy
  800417c:	f3bf 8f4f 	dsb	sy
  8004180:	60fb      	str	r3, [r7, #12]
-}
  8004182:	bf00      	nop
  8004184:	e7fe      	b.n	8004184 <xPortStartScheduler+0x44>
-
-	#if( configASSERT_DEFINED == 1 )
-	{
-		volatile uint32_t ulOriginalPriority;
-		volatile uint8_t * const pucFirstUserPriorityRegister = ( volatile uint8_t * const ) ( portNVIC_IP_REGISTERS_OFFSET_16 + portFIRST_USER_INTERRUPT_NUMBER );
  8004186:	4b39      	ldr	r3, [pc, #228]	; (800426c <xPortStartScheduler+0x12c>)
  8004188:	617b      	str	r3, [r7, #20]
-		functions can be called.  ISR safe functions are those that end in
-		"FromISR".  FreeRTOS maintains separate thread and ISR API functions to
-		ensure interrupt entry is as fast and simple as possible.
-
-		Save the interrupt priority value that is about to be clobbered. */
-		ulOriginalPriority = *pucFirstUserPriorityRegister;
  800418a:	697b      	ldr	r3, [r7, #20]
  800418c:	781b      	ldrb	r3, [r3, #0]
  800418e:	b2db      	uxtb	r3, r3
  8004190:	607b      	str	r3, [r7, #4]
-
-		/* Determine the number of priority bits available.  First write to all
-		possible bits. */
-		*pucFirstUserPriorityRegister = portMAX_8_BIT_VALUE;
  8004192:	697b      	ldr	r3, [r7, #20]
  8004194:	22ff      	movs	r2, #255	; 0xff
  8004196:	701a      	strb	r2, [r3, #0]
-
-		/* Read the value back to see how many bits stuck. */
-		ucMaxPriorityValue = *pucFirstUserPriorityRegister;
  8004198:	697b      	ldr	r3, [r7, #20]
  800419a:	781b      	ldrb	r3, [r3, #0]
  800419c:	b2db      	uxtb	r3, r3
  800419e:	70fb      	strb	r3, [r7, #3]
-
-		/* Use the same mask on the maximum system call priority. */
-		ucMaxSysCallPriority = configMAX_SYSCALL_INTERRUPT_PRIORITY & ucMaxPriorityValue;
  80041a0:	78fb      	ldrb	r3, [r7, #3]
  80041a2:	b2db      	uxtb	r3, r3
  80041a4:	f003 0350 	and.w	r3, r3, #80	; 0x50
  80041a8:	b2da      	uxtb	r2, r3
  80041aa:	4b31      	ldr	r3, [pc, #196]	; (8004270 <xPortStartScheduler+0x130>)
  80041ac:	701a      	strb	r2, [r3, #0]
-
-		/* Calculate the maximum acceptable priority group value for the number
-		of bits read back. */
-		ulMaxPRIGROUPValue = portMAX_PRIGROUP_BITS;
  80041ae:	4b31      	ldr	r3, [pc, #196]	; (8004274 <xPortStartScheduler+0x134>)
  80041b0:	2207      	movs	r2, #7
  80041b2:	601a      	str	r2, [r3, #0]
-		while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
  80041b4:	e009      	b.n	80041ca <xPortStartScheduler+0x8a>
-		{
-			ulMaxPRIGROUPValue--;
  80041b6:	4b2f      	ldr	r3, [pc, #188]	; (8004274 <xPortStartScheduler+0x134>)
  80041b8:	681b      	ldr	r3, [r3, #0]
  80041ba:	3b01      	subs	r3, #1
  80041bc:	4a2d      	ldr	r2, [pc, #180]	; (8004274 <xPortStartScheduler+0x134>)
  80041be:	6013      	str	r3, [r2, #0]
-			ucMaxPriorityValue <<= ( uint8_t ) 0x01;
  80041c0:	78fb      	ldrb	r3, [r7, #3]
  80041c2:	b2db      	uxtb	r3, r3
  80041c4:	005b      	lsls	r3, r3, #1
  80041c6:	b2db      	uxtb	r3, r3
  80041c8:	70fb      	strb	r3, [r7, #3]
-		while( ( ucMaxPriorityValue & portTOP_BIT_OF_BYTE ) == portTOP_BIT_OF_BYTE )
  80041ca:	78fb      	ldrb	r3, [r7, #3]
  80041cc:	b2db      	uxtb	r3, r3
  80041ce:	f003 0380 	and.w	r3, r3, #128	; 0x80
  80041d2:	2b80      	cmp	r3, #128	; 0x80
  80041d4:	d0ef      	beq.n	80041b6 <xPortStartScheduler+0x76>
-		#ifdef configPRIO_BITS
-		{
-			/* Check the FreeRTOS configuration that defines the number of
-			priority bits matches the number of priority bits actually queried
-			from the hardware. */
-			configASSERT( ( portMAX_PRIGROUP_BITS - ulMaxPRIGROUPValue ) == configPRIO_BITS );
  80041d6:	4b27      	ldr	r3, [pc, #156]	; (8004274 <xPortStartScheduler+0x134>)
  80041d8:	681b      	ldr	r3, [r3, #0]
  80041da:	f1c3 0307 	rsb	r3, r3, #7
  80041de:	2b04      	cmp	r3, #4
  80041e0:	d00a      	beq.n	80041f8 <xPortStartScheduler+0xb8>
-	__asm volatile
  80041e2:	f04f 0350 	mov.w	r3, #80	; 0x50
  80041e6:	f383 8811 	msr	BASEPRI, r3
  80041ea:	f3bf 8f6f 	isb	sy
  80041ee:	f3bf 8f4f 	dsb	sy
  80041f2:	60bb      	str	r3, [r7, #8]
-}
  80041f4:	bf00      	nop
  80041f6:	e7fe      	b.n	80041f6 <xPortStartScheduler+0xb6>
-		}
-		#endif
-
-		/* Shift the priority group value back to its position within the AIRCR
-		register. */
-		ulMaxPRIGROUPValue <<= portPRIGROUP_SHIFT;
  80041f8:	4b1e      	ldr	r3, [pc, #120]	; (8004274 <xPortStartScheduler+0x134>)
  80041fa:	681b      	ldr	r3, [r3, #0]
  80041fc:	021b      	lsls	r3, r3, #8
  80041fe:	4a1d      	ldr	r2, [pc, #116]	; (8004274 <xPortStartScheduler+0x134>)
  8004200:	6013      	str	r3, [r2, #0]
-		ulMaxPRIGROUPValue &= portPRIORITY_GROUP_MASK;
  8004202:	4b1c      	ldr	r3, [pc, #112]	; (8004274 <xPortStartScheduler+0x134>)
  8004204:	681b      	ldr	r3, [r3, #0]
  8004206:	f403 63e0 	and.w	r3, r3, #1792	; 0x700
  800420a:	4a1a      	ldr	r2, [pc, #104]	; (8004274 <xPortStartScheduler+0x134>)
  800420c:	6013      	str	r3, [r2, #0]
-
-		/* Restore the clobbered interrupt priority register to its original
-		value. */
-		*pucFirstUserPriorityRegister = ulOriginalPriority;
  800420e:	687b      	ldr	r3, [r7, #4]
  8004210:	b2da      	uxtb	r2, r3
  8004212:	697b      	ldr	r3, [r7, #20]
  8004214:	701a      	strb	r2, [r3, #0]
-	}
-	#endif /* conifgASSERT_DEFINED */
-
-	/* Make PendSV and SysTick the lowest priority interrupts. */
-	portNVIC_SYSPRI2_REG |= portNVIC_PENDSV_PRI;
  8004216:	4b18      	ldr	r3, [pc, #96]	; (8004278 <xPortStartScheduler+0x138>)
  8004218:	681b      	ldr	r3, [r3, #0]
  800421a:	4a17      	ldr	r2, [pc, #92]	; (8004278 <xPortStartScheduler+0x138>)
  800421c:	f443 0370 	orr.w	r3, r3, #15728640	; 0xf00000
  8004220:	6013      	str	r3, [r2, #0]
-	portNVIC_SYSPRI2_REG |= portNVIC_SYSTICK_PRI;
  8004222:	4b15      	ldr	r3, [pc, #84]	; (8004278 <xPortStartScheduler+0x138>)
  8004224:	681b      	ldr	r3, [r3, #0]
  8004226:	4a14      	ldr	r2, [pc, #80]	; (8004278 <xPortStartScheduler+0x138>)
  8004228:	f043 4370 	orr.w	r3, r3, #4026531840	; 0xf0000000
  800422c:	6013      	str	r3, [r2, #0]
-
-	/* Start the timer that generates the tick ISR.  Interrupts are disabled
-	here already. */
-	vPortSetupTimerInterrupt();
  800422e:	f000 f8dd 	bl	80043ec <vPortSetupTimerInterrupt>
-
-	/* Initialise the critical nesting count ready for the first task. */
-	uxCriticalNesting = 0;
  8004232:	4b12      	ldr	r3, [pc, #72]	; (800427c <xPortStartScheduler+0x13c>)
  8004234:	2200      	movs	r2, #0
  8004236:	601a      	str	r2, [r3, #0]
-
-	/* Ensure the VFP is enabled - it should be anyway. */
-	vPortEnableVFP();
  8004238:	f000 f8fc 	bl	8004434 <vPortEnableVFP>
-
-	/* Lazy save always. */
-	*( portFPCCR ) |= portASPEN_AND_LSPEN_BITS;
  800423c:	4b10      	ldr	r3, [pc, #64]	; (8004280 <xPortStartScheduler+0x140>)
  800423e:	681b      	ldr	r3, [r3, #0]
  8004240:	4a0f      	ldr	r2, [pc, #60]	; (8004280 <xPortStartScheduler+0x140>)
  8004242:	f043 4340 	orr.w	r3, r3, #3221225472	; 0xc0000000
  8004246:	6013      	str	r3, [r2, #0]
-
-	/* Start the first task. */
-	prvPortStartFirstTask();
  8004248:	f7ff ff66 	bl	8004118 <prvPortStartFirstTask>
-	exit error function to prevent compiler warnings about a static function
-	not being called in the case that the application writer overrides this
-	functionality by defining configTASK_RETURN_ADDRESS.  Call
-	vTaskSwitchContext() so link time optimisation does not remove the
-	symbol. */
-	vTaskSwitchContext();
  800424c:	f7ff fd5a 	bl	8003d04 <vTaskSwitchContext>
-	prvTaskExitError();
  8004250:	f7ff ff22 	bl	8004098 <prvTaskExitError>
-
-	/* Should not get here! */
-	return 0;
  8004254:	2300      	movs	r3, #0
-}
  8004256:	4618      	mov	r0, r3
  8004258:	3718      	adds	r7, #24
  800425a:	46bd      	mov	sp, r7
@@ -11338,58 +10145,36 @@ BaseType_t xPortStartScheduler( void )
  8004280:	e000ef34 	.word	0xe000ef34
 
 08004284 <vPortEnterCritical>:
-	configASSERT( uxCriticalNesting == 1000UL );
-}
-/*-----------------------------------------------------------*/
-
-void vPortEnterCritical( void )
-{
  8004284:	b480      	push	{r7}
  8004286:	b083      	sub	sp, #12
  8004288:	af00      	add	r7, sp, #0
-	__asm volatile
  800428a:	f04f 0350 	mov.w	r3, #80	; 0x50
  800428e:	f383 8811 	msr	BASEPRI, r3
  8004292:	f3bf 8f6f 	isb	sy
  8004296:	f3bf 8f4f 	dsb	sy
  800429a:	607b      	str	r3, [r7, #4]
-}
  800429c:	bf00      	nop
-	portDISABLE_INTERRUPTS();
-	uxCriticalNesting++;
  800429e:	4b0f      	ldr	r3, [pc, #60]	; (80042dc <vPortEnterCritical+0x58>)
  80042a0:	681b      	ldr	r3, [r3, #0]
  80042a2:	3301      	adds	r3, #1
  80042a4:	4a0d      	ldr	r2, [pc, #52]	; (80042dc <vPortEnterCritical+0x58>)
  80042a6:	6013      	str	r3, [r2, #0]
-	/* This is not the interrupt safe version of the enter critical function so
-	assert() if it is being called from an interrupt context.  Only API
-	functions that end in "FromISR" can be used in an interrupt.  Only assert if
-	the critical nesting count is 1 to protect against recursive calls if the
-	assert function also uses a critical section. */
-	if( uxCriticalNesting == 1 )
  80042a8:	4b0c      	ldr	r3, [pc, #48]	; (80042dc <vPortEnterCritical+0x58>)
  80042aa:	681b      	ldr	r3, [r3, #0]
  80042ac:	2b01      	cmp	r3, #1
  80042ae:	d10f      	bne.n	80042d0 <vPortEnterCritical+0x4c>
-	{
-		configASSERT( ( portNVIC_INT_CTRL_REG & portVECTACTIVE_MASK ) == 0 );
  80042b0:	4b0b      	ldr	r3, [pc, #44]	; (80042e0 <vPortEnterCritical+0x5c>)
  80042b2:	681b      	ldr	r3, [r3, #0]
  80042b4:	b2db      	uxtb	r3, r3
  80042b6:	2b00      	cmp	r3, #0
  80042b8:	d00a      	beq.n	80042d0 <vPortEnterCritical+0x4c>
-	__asm volatile
  80042ba:	f04f 0350 	mov.w	r3, #80	; 0x50
  80042be:	f383 8811 	msr	BASEPRI, r3
  80042c2:	f3bf 8f6f 	isb	sy
  80042c6:	f3bf 8f4f 	dsb	sy
  80042ca:	603b      	str	r3, [r7, #0]
-}
  80042cc:	bf00      	nop
  80042ce:	e7fe      	b.n	80042ce <vPortEnterCritical+0x4a>
-	}
-}
  80042d0:	bf00      	nop
  80042d2:	370c      	adds	r7, #12
  80042d4:	46bd      	mov	sp, r7
@@ -11399,57 +10184,34 @@ void vPortEnterCritical( void )
  80042e0:	e000ed04 	.word	0xe000ed04
 
 080042e4 <vPortExitCritical>:
-/*-----------------------------------------------------------*/
-
-void vPortExitCritical( void )
-{
  80042e4:	b480      	push	{r7}
  80042e6:	b083      	sub	sp, #12
  80042e8:	af00      	add	r7, sp, #0
-	configASSERT( uxCriticalNesting );
  80042ea:	4b12      	ldr	r3, [pc, #72]	; (8004334 <vPortExitCritical+0x50>)
  80042ec:	681b      	ldr	r3, [r3, #0]
  80042ee:	2b00      	cmp	r3, #0
  80042f0:	d10a      	bne.n	8004308 <vPortExitCritical+0x24>
-	__asm volatile
  80042f2:	f04f 0350 	mov.w	r3, #80	; 0x50
  80042f6:	f383 8811 	msr	BASEPRI, r3
  80042fa:	f3bf 8f6f 	isb	sy
  80042fe:	f3bf 8f4f 	dsb	sy
  8004302:	607b      	str	r3, [r7, #4]
-}
  8004304:	bf00      	nop
  8004306:	e7fe      	b.n	8004306 <vPortExitCritical+0x22>
-	uxCriticalNesting--;
  8004308:	4b0a      	ldr	r3, [pc, #40]	; (8004334 <vPortExitCritical+0x50>)
  800430a:	681b      	ldr	r3, [r3, #0]
  800430c:	3b01      	subs	r3, #1
  800430e:	4a09      	ldr	r2, [pc, #36]	; (8004334 <vPortExitCritical+0x50>)
  8004310:	6013      	str	r3, [r2, #0]
-	if( uxCriticalNesting == 0 )
  8004312:	4b08      	ldr	r3, [pc, #32]	; (8004334 <vPortExitCritical+0x50>)
  8004314:	681b      	ldr	r3, [r3, #0]
  8004316:	2b00      	cmp	r3, #0
  8004318:	d105      	bne.n	8004326 <vPortExitCritical+0x42>
  800431a:	2300      	movs	r3, #0
  800431c:	603b      	str	r3, [r7, #0]
-}
-/*-----------------------------------------------------------*/
-
-portFORCE_INLINE static void vPortSetBASEPRI( uint32_t ulNewMaskValue )
-{
-	__asm volatile
  800431e:	683b      	ldr	r3, [r7, #0]
  8004320:	f383 8811 	msr	BASEPRI, r3
-	(
-		"	msr basepri, %0	" :: "r" ( ulNewMaskValue ) : "memory"
-	);
-}
  8004324:	bf00      	nop
-	{
-		portENABLE_INTERRUPTS();
-	}
-}
  8004326:	bf00      	nop
  8004328:	370c      	adds	r7, #12
  800432a:	46bd      	mov	sp, r7
@@ -11460,12 +10222,6 @@ portFORCE_INLINE static void vPortSetBASEPRI( uint32_t ulNewMaskValue )
 	...
 
 08004340 <PendSV_Handler>:
-
-void xPortPendSVHandler( void )
-{
-	/* This is a naked function. */
-
-	__asm volatile
  8004340:	f3ef 8009 	mrs	r0, PSP
  8004344:	f3bf 8f6f 	isb	sy
  8004348:	4b15      	ldr	r3, [pc, #84]	; (80043a0 <pxCurrentTCBConst>)
@@ -11498,59 +10254,31 @@ void xPortPendSVHandler( void )
 
 080043a0 <pxCurrentTCBConst>:
  80043a0:	20000178 	.word	0x20000178
-	"										\n"
-	"	.align 4							\n"
-	"pxCurrentTCBConst: .word pxCurrentTCB	\n"
-	::"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY)
-	);
-}
  80043a4:	bf00      	nop
  80043a6:	bf00      	nop
 
 080043a8 <xPortSysTickHandler>:
-/*-----------------------------------------------------------*/
-
-void xPortSysTickHandler( void )
-{
  80043a8:	b580      	push	{r7, lr}
  80043aa:	b082      	sub	sp, #8
  80043ac:	af00      	add	r7, sp, #0
-	__asm volatile
  80043ae:	f04f 0350 	mov.w	r3, #80	; 0x50
  80043b2:	f383 8811 	msr	BASEPRI, r3
  80043b6:	f3bf 8f6f 	isb	sy
  80043ba:	f3bf 8f4f 	dsb	sy
  80043be:	607b      	str	r3, [r7, #4]
-}
  80043c0:	bf00      	nop
-	save and then restore the interrupt mask value as its value is already
-	known. */
-	portDISABLE_INTERRUPTS();
-	{
-		/* Increment the RTOS tick. */
-		if( xTaskIncrementTick() != pdFALSE )
  80043c2:	f7ff fbe7 	bl	8003b94 <xTaskIncrementTick>
  80043c6:	4603      	mov	r3, r0
  80043c8:	2b00      	cmp	r3, #0
  80043ca:	d003      	beq.n	80043d4 <xPortSysTickHandler+0x2c>
-		{
-			/* A context switch is required.  Context switching is performed in
-			the PendSV interrupt.  Pend the PendSV interrupt. */
-			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
  80043cc:	4b06      	ldr	r3, [pc, #24]	; (80043e8 <xPortSysTickHandler+0x40>)
  80043ce:	f04f 5280 	mov.w	r2, #268435456	; 0x10000000
  80043d2:	601a      	str	r2, [r3, #0]
  80043d4:	2300      	movs	r3, #0
  80043d6:	603b      	str	r3, [r7, #0]
-	__asm volatile
  80043d8:	683b      	ldr	r3, [r7, #0]
  80043da:	f383 8811 	msr	BASEPRI, r3
-}
  80043de:	bf00      	nop
-		}
-	}
-	portENABLE_INTERRUPTS();
-}
  80043e0:	bf00      	nop
  80043e2:	3708      	adds	r7, #8
  80043e4:	46bd      	mov	sp, r7
@@ -11558,30 +10286,14 @@ void xPortSysTickHandler( void )
  80043e8:	e000ed04 	.word	0xe000ed04
 
 080043ec <vPortSetupTimerInterrupt>:
-/*
- * Setup the systick timer to generate the tick interrupts at the required
- * frequency.
- */
-__attribute__(( weak )) void vPortSetupTimerInterrupt( void )
-{
  80043ec:	b480      	push	{r7}
  80043ee:	af00      	add	r7, sp, #0
-		ulStoppedTimerCompensation = portMISSED_COUNTS_FACTOR / ( configCPU_CLOCK_HZ / configSYSTICK_CLOCK_HZ );
-	}
-	#endif /* configUSE_TICKLESS_IDLE */
-
-	/* Stop and clear the SysTick. */
-	portNVIC_SYSTICK_CTRL_REG = 0UL;
  80043f0:	4b0b      	ldr	r3, [pc, #44]	; (8004420 <vPortSetupTimerInterrupt+0x34>)
  80043f2:	2200      	movs	r2, #0
  80043f4:	601a      	str	r2, [r3, #0]
-	portNVIC_SYSTICK_CURRENT_VALUE_REG = 0UL;
  80043f6:	4b0b      	ldr	r3, [pc, #44]	; (8004424 <vPortSetupTimerInterrupt+0x38>)
  80043f8:	2200      	movs	r2, #0
  80043fa:	601a      	str	r2, [r3, #0]
-
-	/* Configure SysTick to interrupt at the requested rate. */
-	portNVIC_SYSTICK_LOAD_REG = ( configSYSTICK_CLOCK_HZ / configTICK_RATE_HZ ) - 1UL;
  80043fc:	4b0a      	ldr	r3, [pc, #40]	; (8004428 <vPortSetupTimerInterrupt+0x3c>)
  80043fe:	681b      	ldr	r3, [r3, #0]
  8004400:	4a0a      	ldr	r2, [pc, #40]	; (800442c <vPortSetupTimerInterrupt+0x40>)
@@ -11590,11 +10302,9 @@ __attribute__(( weak )) void vPortSetupTimerInterrupt( void )
  8004408:	4a09      	ldr	r2, [pc, #36]	; (8004430 <vPortSetupTimerInterrupt+0x44>)
  800440a:	3b01      	subs	r3, #1
  800440c:	6013      	str	r3, [r2, #0]
-	portNVIC_SYSTICK_CTRL_REG = ( portNVIC_SYSTICK_CLK_BIT | portNVIC_SYSTICK_INT_BIT | portNVIC_SYSTICK_ENABLE_BIT );
  800440e:	4b04      	ldr	r3, [pc, #16]	; (8004420 <vPortSetupTimerInterrupt+0x34>)
  8004410:	2207      	movs	r2, #7
  8004412:	601a      	str	r2, [r3, #0]
-}
  8004414:	bf00      	nop
  8004416:	46bd      	mov	sp, r7
  8004418:	f85d 7b04 	ldr.w	r7, [sp], #4
@@ -11607,115 +10317,59 @@ __attribute__(( weak )) void vPortSetupTimerInterrupt( void )
  8004430:	e000e014 	.word	0xe000e014
 
 08004434 <vPortEnableVFP>:
-/*-----------------------------------------------------------*/
-
-/* This is a naked function. */
-static void vPortEnableVFP( void )
-{
-	__asm volatile
  8004434:	f8df 000c 	ldr.w	r0, [pc, #12]	; 8004444 <vPortEnableVFP+0x10>
  8004438:	6801      	ldr	r1, [r0, #0]
  800443a:	f441 0170 	orr.w	r1, r1, #15728640	; 0xf00000
  800443e:	6001      	str	r1, [r0, #0]
  8004440:	4770      	bx	lr
-		"								\n"
-		"	orr r1, r1, #( 0xf << 20 )	\n" /* Enable CP10 and CP11 coprocessors, then save back. */
-		"	str r1, [r0]				\n"
-		"	bx r14						"
-	);
-}
  8004442:	bf00      	nop
  8004444:	e000ed88 	.word	0xe000ed88
 
 08004448 <pvPortMalloc>:
-static size_t xBlockAllocatedBit = 0;
-
-/*-----------------------------------------------------------*/
-
-void *pvPortMalloc( size_t xWantedSize )
-{
  8004448:	b580      	push	{r7, lr}
  800444a:	b08a      	sub	sp, #40	; 0x28
  800444c:	af00      	add	r7, sp, #0
  800444e:	6078      	str	r0, [r7, #4]
-BlockLink_t *pxBlock, *pxPreviousBlock, *pxNewBlockLink;
-void *pvReturn = NULL;
  8004450:	2300      	movs	r3, #0
  8004452:	61fb      	str	r3, [r7, #28]
-
-	vTaskSuspendAll();
  8004454:	f7ff faf4 	bl	8003a40 <vTaskSuspendAll>
-	{
-		/* If this is the first call to malloc then the heap will require
-		initialisation to setup the list of free blocks. */
-		if( pxEnd == NULL )
  8004458:	4b5b      	ldr	r3, [pc, #364]	; (80045c8 <pvPortMalloc+0x180>)
  800445a:	681b      	ldr	r3, [r3, #0]
  800445c:	2b00      	cmp	r3, #0
  800445e:	d101      	bne.n	8004464 <pvPortMalloc+0x1c>
-		{
-			prvHeapInit();
  8004460:	f000 f920 	bl	80046a4 <prvHeapInit>
-
-		/* Check the requested block size is not so large that the top bit is
-		set.  The top bit of the block size member of the BlockLink_t structure
-		is used to determine who owns the block - the application or the
-		kernel, so it must be free. */
-		if( ( xWantedSize & xBlockAllocatedBit ) == 0 )
  8004464:	4b59      	ldr	r3, [pc, #356]	; (80045cc <pvPortMalloc+0x184>)
  8004466:	681a      	ldr	r2, [r3, #0]
  8004468:	687b      	ldr	r3, [r7, #4]
  800446a:	4013      	ands	r3, r2
  800446c:	2b00      	cmp	r3, #0
  800446e:	f040 8093 	bne.w	8004598 <pvPortMalloc+0x150>
-		{
-			/* The wanted size is increased so it can contain a BlockLink_t
-			structure in addition to the requested amount of bytes. */
-			if( xWantedSize > 0 )
  8004472:	687b      	ldr	r3, [r7, #4]
  8004474:	2b00      	cmp	r3, #0
  8004476:	d01d      	beq.n	80044b4 <pvPortMalloc+0x6c>
-			{
-				xWantedSize += xHeapStructSize;
  8004478:	2208      	movs	r2, #8
  800447a:	687b      	ldr	r3, [r7, #4]
  800447c:	4413      	add	r3, r2
  800447e:	607b      	str	r3, [r7, #4]
-
-				/* Ensure that blocks are always aligned to the required number
-				of bytes. */
-				if( ( xWantedSize & portBYTE_ALIGNMENT_MASK ) != 0x00 )
  8004480:	687b      	ldr	r3, [r7, #4]
  8004482:	f003 0307 	and.w	r3, r3, #7
  8004486:	2b00      	cmp	r3, #0
  8004488:	d014      	beq.n	80044b4 <pvPortMalloc+0x6c>
-				{
-					/* Byte alignment required. */
-					xWantedSize += ( portBYTE_ALIGNMENT - ( xWantedSize & portBYTE_ALIGNMENT_MASK ) );
  800448a:	687b      	ldr	r3, [r7, #4]
  800448c:	f023 0307 	bic.w	r3, r3, #7
  8004490:	3308      	adds	r3, #8
  8004492:	607b      	str	r3, [r7, #4]
-					configASSERT( ( xWantedSize & portBYTE_ALIGNMENT_MASK ) == 0 );
  8004494:	687b      	ldr	r3, [r7, #4]
  8004496:	f003 0307 	and.w	r3, r3, #7
  800449a:	2b00      	cmp	r3, #0
  800449c:	d00a      	beq.n	80044b4 <pvPortMalloc+0x6c>
-	__asm volatile
  800449e:	f04f 0350 	mov.w	r3, #80	; 0x50
  80044a2:	f383 8811 	msr	BASEPRI, r3
  80044a6:	f3bf 8f6f 	isb	sy
  80044aa:	f3bf 8f4f 	dsb	sy
  80044ae:	617b      	str	r3, [r7, #20]
-}
  80044b0:	bf00      	nop
  80044b2:	e7fe      	b.n	80044b2 <pvPortMalloc+0x6a>
-			else
-			{
-				mtCOVERAGE_TEST_MARKER();
-			}
-
-			if( ( xWantedSize > 0 ) && ( xWantedSize <= xFreeBytesRemaining ) )
  80044b4:	687b      	ldr	r3, [r7, #4]
  80044b6:	2b00      	cmp	r3, #0
  80044b8:	d06e      	beq.n	8004598 <pvPortMalloc+0x150>
@@ -11724,27 +10378,17 @@ void *pvReturn = NULL;
  80044be:	687a      	ldr	r2, [r7, #4]
  80044c0:	429a      	cmp	r2, r3
  80044c2:	d869      	bhi.n	8004598 <pvPortMalloc+0x150>
-			{
-				/* Traverse the list from the start	(lowest address) block until
-				one	of adequate size is found. */
-				pxPreviousBlock = &xStart;
  80044c4:	4b43      	ldr	r3, [pc, #268]	; (80045d4 <pvPortMalloc+0x18c>)
  80044c6:	623b      	str	r3, [r7, #32]
-				pxBlock = xStart.pxNextFreeBlock;
  80044c8:	4b42      	ldr	r3, [pc, #264]	; (80045d4 <pvPortMalloc+0x18c>)
  80044ca:	681b      	ldr	r3, [r3, #0]
  80044cc:	627b      	str	r3, [r7, #36]	; 0x24
-				while( ( pxBlock->xBlockSize < xWantedSize ) && ( pxBlock->pxNextFreeBlock != NULL ) )
  80044ce:	e004      	b.n	80044da <pvPortMalloc+0x92>
-				{
-					pxPreviousBlock = pxBlock;
  80044d0:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  80044d2:	623b      	str	r3, [r7, #32]
-					pxBlock = pxBlock->pxNextFreeBlock;
  80044d4:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  80044d6:	681b      	ldr	r3, [r3, #0]
  80044d8:	627b      	str	r3, [r7, #36]	; 0x24
-				while( ( pxBlock->xBlockSize < xWantedSize ) && ( pxBlock->pxNextFreeBlock != NULL ) )
  80044da:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  80044dc:	685b      	ldr	r3, [r3, #4]
  80044de:	687a      	ldr	r2, [r7, #4]
@@ -11754,37 +10398,20 @@ void *pvReturn = NULL;
  80044e6:	681b      	ldr	r3, [r3, #0]
  80044e8:	2b00      	cmp	r3, #0
  80044ea:	d1f1      	bne.n	80044d0 <pvPortMalloc+0x88>
-				}
-
-				/* If the end marker was reached then a block of adequate size
-				was	not found. */
-				if( pxBlock != pxEnd )
  80044ec:	4b36      	ldr	r3, [pc, #216]	; (80045c8 <pvPortMalloc+0x180>)
  80044ee:	681b      	ldr	r3, [r3, #0]
  80044f0:	6a7a      	ldr	r2, [r7, #36]	; 0x24
  80044f2:	429a      	cmp	r2, r3
  80044f4:	d050      	beq.n	8004598 <pvPortMalloc+0x150>
-				{
-					/* Return the memory space pointed to - jumping over the
-					BlockLink_t structure at its start. */
-					pvReturn = ( void * ) ( ( ( uint8_t * ) pxPreviousBlock->pxNextFreeBlock ) + xHeapStructSize );
  80044f6:	6a3b      	ldr	r3, [r7, #32]
  80044f8:	681b      	ldr	r3, [r3, #0]
  80044fa:	2208      	movs	r2, #8
  80044fc:	4413      	add	r3, r2
  80044fe:	61fb      	str	r3, [r7, #28]
-
-					/* This block is being returned for use so must be taken out
-					of the list of free blocks. */
-					pxPreviousBlock->pxNextFreeBlock = pxBlock->pxNextFreeBlock;
  8004500:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  8004502:	681a      	ldr	r2, [r3, #0]
  8004504:	6a3b      	ldr	r3, [r7, #32]
  8004506:	601a      	str	r2, [r3, #0]
-
-					/* If the block is larger than required it can be split into
-					two. */
-					if( ( pxBlock->xBlockSize - xWantedSize ) > heapMINIMUM_BLOCK_SIZE )
  8004508:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  800450a:	685a      	ldr	r2, [r3, #4]
  800450c:	687b      	ldr	r3, [r7, #4]
@@ -11793,55 +10420,32 @@ void *pvReturn = NULL;
  8004512:	005b      	lsls	r3, r3, #1
  8004514:	429a      	cmp	r2, r3
  8004516:	d91f      	bls.n	8004558 <pvPortMalloc+0x110>
-					{
-						/* This block is to be split into two.  Create a new
-						block following the number of bytes requested. The void
-						cast is used to prevent byte alignment warnings from the
-						compiler. */
-						pxNewBlockLink = ( void * ) ( ( ( uint8_t * ) pxBlock ) + xWantedSize );
  8004518:	6a7a      	ldr	r2, [r7, #36]	; 0x24
  800451a:	687b      	ldr	r3, [r7, #4]
  800451c:	4413      	add	r3, r2
  800451e:	61bb      	str	r3, [r7, #24]
-						configASSERT( ( ( ( size_t ) pxNewBlockLink ) & portBYTE_ALIGNMENT_MASK ) == 0 );
  8004520:	69bb      	ldr	r3, [r7, #24]
  8004522:	f003 0307 	and.w	r3, r3, #7
  8004526:	2b00      	cmp	r3, #0
  8004528:	d00a      	beq.n	8004540 <pvPortMalloc+0xf8>
-	__asm volatile
  800452a:	f04f 0350 	mov.w	r3, #80	; 0x50
  800452e:	f383 8811 	msr	BASEPRI, r3
  8004532:	f3bf 8f6f 	isb	sy
  8004536:	f3bf 8f4f 	dsb	sy
  800453a:	613b      	str	r3, [r7, #16]
-}
  800453c:	bf00      	nop
  800453e:	e7fe      	b.n	800453e <pvPortMalloc+0xf6>
-
-						/* Calculate the sizes of two blocks split from the
-						single block. */
-						pxNewBlockLink->xBlockSize = pxBlock->xBlockSize - xWantedSize;
  8004540:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  8004542:	685a      	ldr	r2, [r3, #4]
  8004544:	687b      	ldr	r3, [r7, #4]
  8004546:	1ad2      	subs	r2, r2, r3
  8004548:	69bb      	ldr	r3, [r7, #24]
  800454a:	605a      	str	r2, [r3, #4]
-						pxBlock->xBlockSize = xWantedSize;
  800454c:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  800454e:	687a      	ldr	r2, [r7, #4]
  8004550:	605a      	str	r2, [r3, #4]
-
-						/* Insert the new block into the list of free blocks. */
-						prvInsertBlockIntoFreeList( pxNewBlockLink );
  8004552:	69b8      	ldr	r0, [r7, #24]
  8004554:	f000 f908 	bl	8004768 <prvInsertBlockIntoFreeList>
-					else
-					{
-						mtCOVERAGE_TEST_MARKER();
-					}
-
-					xFreeBytesRemaining -= pxBlock->xBlockSize;
  8004558:	4b1d      	ldr	r3, [pc, #116]	; (80045d0 <pvPortMalloc+0x188>)
  800455a:	681a      	ldr	r2, [r3, #0]
  800455c:	6a7b      	ldr	r3, [r7, #36]	; 0x24
@@ -11849,26 +10453,16 @@ void *pvReturn = NULL;
  8004560:	1ad3      	subs	r3, r2, r3
  8004562:	4a1b      	ldr	r2, [pc, #108]	; (80045d0 <pvPortMalloc+0x188>)
  8004564:	6013      	str	r3, [r2, #0]
-
-					if( xFreeBytesRemaining < xMinimumEverFreeBytesRemaining )
  8004566:	4b1a      	ldr	r3, [pc, #104]	; (80045d0 <pvPortMalloc+0x188>)
  8004568:	681a      	ldr	r2, [r3, #0]
  800456a:	4b1b      	ldr	r3, [pc, #108]	; (80045d8 <pvPortMalloc+0x190>)
  800456c:	681b      	ldr	r3, [r3, #0]
  800456e:	429a      	cmp	r2, r3
  8004570:	d203      	bcs.n	800457a <pvPortMalloc+0x132>
-					{
-						xMinimumEverFreeBytesRemaining = xFreeBytesRemaining;
  8004572:	4b17      	ldr	r3, [pc, #92]	; (80045d0 <pvPortMalloc+0x188>)
  8004574:	681b      	ldr	r3, [r3, #0]
  8004576:	4a18      	ldr	r2, [pc, #96]	; (80045d8 <pvPortMalloc+0x190>)
  8004578:	6013      	str	r3, [r2, #0]
-						mtCOVERAGE_TEST_MARKER();
-					}
-
-					/* The block is being returned - it is allocated and owned
-					by the application and has no "next" block. */
-					pxBlock->xBlockSize |= xBlockAllocatedBit;
  800457a:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  800457c:	685a      	ldr	r2, [r3, #4]
  800457e:	4b13      	ldr	r3, [pc, #76]	; (80045cc <pvPortMalloc+0x184>)
@@ -11876,45 +10470,27 @@ void *pvReturn = NULL;
  8004582:	431a      	orrs	r2, r3
  8004584:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  8004586:	605a      	str	r2, [r3, #4]
-					pxBlock->pxNextFreeBlock = NULL;
  8004588:	6a7b      	ldr	r3, [r7, #36]	; 0x24
  800458a:	2200      	movs	r2, #0
  800458c:	601a      	str	r2, [r3, #0]
-					xNumberOfSuccessfulAllocations++;
  800458e:	4b13      	ldr	r3, [pc, #76]	; (80045dc <pvPortMalloc+0x194>)
  8004590:	681b      	ldr	r3, [r3, #0]
  8004592:	3301      	adds	r3, #1
  8004594:	4a11      	ldr	r2, [pc, #68]	; (80045dc <pvPortMalloc+0x194>)
  8004596:	6013      	str	r3, [r2, #0]
-			mtCOVERAGE_TEST_MARKER();
-		}
-
-		traceMALLOC( pvReturn, xWantedSize );
-	}
-	( void ) xTaskResumeAll();
  8004598:	f7ff fa60 	bl	8003a5c <xTaskResumeAll>
-			mtCOVERAGE_TEST_MARKER();
-		}
-	}
-	#endif
-
-	configASSERT( ( ( ( size_t ) pvReturn ) & ( size_t ) portBYTE_ALIGNMENT_MASK ) == 0 );
  800459c:	69fb      	ldr	r3, [r7, #28]
  800459e:	f003 0307 	and.w	r3, r3, #7
  80045a2:	2b00      	cmp	r3, #0
  80045a4:	d00a      	beq.n	80045bc <pvPortMalloc+0x174>
-	__asm volatile
  80045a6:	f04f 0350 	mov.w	r3, #80	; 0x50
  80045aa:	f383 8811 	msr	BASEPRI, r3
  80045ae:	f3bf 8f6f 	isb	sy
  80045b2:	f3bf 8f4f 	dsb	sy
  80045b6:	60fb      	str	r3, [r7, #12]
-}
  80045b8:	bf00      	nop
  80045ba:	e7fe      	b.n	80045ba <pvPortMalloc+0x172>
-	return pvReturn;
  80045bc:	69fb      	ldr	r3, [r7, #28]
-}
  80045be:	4618      	mov	r0, r3
  80045c0:	3728      	adds	r7, #40	; 0x28
  80045c2:	46bd      	mov	sp, r7
@@ -11928,40 +10504,22 @@ void *pvReturn = NULL;
  80045dc:	20000ec0 	.word	0x20000ec0
 
 080045e0 <vPortFree>:
-/*-----------------------------------------------------------*/
-
-void vPortFree( void *pv )
-{
  80045e0:	b580      	push	{r7, lr}
  80045e2:	b086      	sub	sp, #24
  80045e4:	af00      	add	r7, sp, #0
  80045e6:	6078      	str	r0, [r7, #4]
-uint8_t *puc = ( uint8_t * ) pv;
  80045e8:	687b      	ldr	r3, [r7, #4]
  80045ea:	617b      	str	r3, [r7, #20]
-BlockLink_t *pxLink;
-
-	if( pv != NULL )
  80045ec:	687b      	ldr	r3, [r7, #4]
  80045ee:	2b00      	cmp	r3, #0
  80045f0:	d04d      	beq.n	800468e <vPortFree+0xae>
-	{
-		/* The memory being freed will have an BlockLink_t structure immediately
-		before it. */
-		puc -= xHeapStructSize;
  80045f2:	2308      	movs	r3, #8
  80045f4:	425b      	negs	r3, r3
  80045f6:	697a      	ldr	r2, [r7, #20]
  80045f8:	4413      	add	r3, r2
  80045fa:	617b      	str	r3, [r7, #20]
-
-		/* This casting is to keep the compiler from issuing warnings. */
-		pxLink = ( void * ) puc;
  80045fc:	697b      	ldr	r3, [r7, #20]
  80045fe:	613b      	str	r3, [r7, #16]
-
-		/* Check the block is actually allocated. */
-		configASSERT( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 );
  8004600:	693b      	ldr	r3, [r7, #16]
  8004602:	685a      	ldr	r2, [r3, #4]
  8004604:	4b24      	ldr	r3, [pc, #144]	; (8004698 <vPortFree+0xb8>)
@@ -11969,31 +10527,24 @@ BlockLink_t *pxLink;
  8004608:	4013      	ands	r3, r2
  800460a:	2b00      	cmp	r3, #0
  800460c:	d10a      	bne.n	8004624 <vPortFree+0x44>
-	__asm volatile
  800460e:	f04f 0350 	mov.w	r3, #80	; 0x50
  8004612:	f383 8811 	msr	BASEPRI, r3
  8004616:	f3bf 8f6f 	isb	sy
  800461a:	f3bf 8f4f 	dsb	sy
  800461e:	60fb      	str	r3, [r7, #12]
-}
  8004620:	bf00      	nop
  8004622:	e7fe      	b.n	8004622 <vPortFree+0x42>
-		configASSERT( pxLink->pxNextFreeBlock == NULL );
  8004624:	693b      	ldr	r3, [r7, #16]
  8004626:	681b      	ldr	r3, [r3, #0]
  8004628:	2b00      	cmp	r3, #0
  800462a:	d00a      	beq.n	8004642 <vPortFree+0x62>
-	__asm volatile
  800462c:	f04f 0350 	mov.w	r3, #80	; 0x50
  8004630:	f383 8811 	msr	BASEPRI, r3
  8004634:	f3bf 8f6f 	isb	sy
  8004638:	f3bf 8f4f 	dsb	sy
  800463c:	60bb      	str	r3, [r7, #8]
-}
  800463e:	bf00      	nop
  8004640:	e7fe      	b.n	8004640 <vPortFree+0x60>
-
-		if( ( pxLink->xBlockSize & xBlockAllocatedBit ) != 0 )
  8004642:	693b      	ldr	r3, [r7, #16]
  8004644:	685a      	ldr	r2, [r3, #4]
  8004646:	4b14      	ldr	r3, [pc, #80]	; (8004698 <vPortFree+0xb8>)
@@ -12001,16 +10552,10 @@ BlockLink_t *pxLink;
  800464a:	4013      	ands	r3, r2
  800464c:	2b00      	cmp	r3, #0
  800464e:	d01e      	beq.n	800468e <vPortFree+0xae>
-		{
-			if( pxLink->pxNextFreeBlock == NULL )
  8004650:	693b      	ldr	r3, [r7, #16]
  8004652:	681b      	ldr	r3, [r3, #0]
  8004654:	2b00      	cmp	r3, #0
  8004656:	d11a      	bne.n	800468e <vPortFree+0xae>
-			{
-				/* The block is being returned to the heap - it is no longer
-				allocated. */
-				pxLink->xBlockSize &= ~xBlockAllocatedBit;
  8004658:	693b      	ldr	r3, [r7, #16]
  800465a:	685a      	ldr	r2, [r3, #4]
  800465c:	4b0e      	ldr	r3, [pc, #56]	; (8004698 <vPortFree+0xb8>)
@@ -12019,12 +10564,7 @@ BlockLink_t *pxLink;
  8004662:	401a      	ands	r2, r3
  8004664:	693b      	ldr	r3, [r7, #16]
  8004666:	605a      	str	r2, [r3, #4]
-
-				vTaskSuspendAll();
  8004668:	f7ff f9ea 	bl	8003a40 <vTaskSuspendAll>
-				{
-					/* Add this block to the list of free blocks. */
-					xFreeBytesRemaining += pxLink->xBlockSize;
  800466c:	693b      	ldr	r3, [r7, #16]
  800466e:	685a      	ldr	r2, [r3, #4]
  8004670:	4b0a      	ldr	r3, [pc, #40]	; (800469c <vPortFree+0xbc>)
@@ -12032,25 +10572,14 @@ BlockLink_t *pxLink;
  8004674:	4413      	add	r3, r2
  8004676:	4a09      	ldr	r2, [pc, #36]	; (800469c <vPortFree+0xbc>)
  8004678:	6013      	str	r3, [r2, #0]
-					traceFREE( pv, pxLink->xBlockSize );
-					prvInsertBlockIntoFreeList( ( ( BlockLink_t * ) pxLink ) );
  800467a:	6938      	ldr	r0, [r7, #16]
  800467c:	f000 f874 	bl	8004768 <prvInsertBlockIntoFreeList>
-					xNumberOfSuccessfulFrees++;
  8004680:	4b07      	ldr	r3, [pc, #28]	; (80046a0 <vPortFree+0xc0>)
  8004682:	681b      	ldr	r3, [r3, #0]
  8004684:	3301      	adds	r3, #1
  8004686:	4a06      	ldr	r2, [pc, #24]	; (80046a0 <vPortFree+0xc0>)
  8004688:	6013      	str	r3, [r2, #0]
-				}
-				( void ) xTaskResumeAll();
  800468a:	f7ff f9e7 	bl	8003a5c <xTaskResumeAll>
-		else
-		{
-			mtCOVERAGE_TEST_MARKER();
-		}
-	}
-}
  800468e:	bf00      	nop
  8004690:	3718      	adds	r7, #24
  8004692:	46bd      	mov	sp, r7
@@ -12061,131 +10590,81 @@ BlockLink_t *pxLink;
  80046a0:	20000ec4 	.word	0x20000ec4
 
 080046a4 <prvHeapInit>:
-	/* This just exists to keep the linker quiet. */
-}
-/*-----------------------------------------------------------*/
-
-static void prvHeapInit( void )
-{
  80046a4:	b480      	push	{r7}
  80046a6:	b085      	sub	sp, #20
  80046a8:	af00      	add	r7, sp, #0
-BlockLink_t *pxFirstFreeBlock;
-uint8_t *pucAlignedHeap;
-size_t uxAddress;
-size_t xTotalHeapSize = configTOTAL_HEAP_SIZE;
  80046aa:	f44f 6340 	mov.w	r3, #3072	; 0xc00
  80046ae:	60bb      	str	r3, [r7, #8]
-
-	/* Ensure the heap starts on a correctly aligned boundary. */
-	uxAddress = ( size_t ) ucHeap;
  80046b0:	4b27      	ldr	r3, [pc, #156]	; (8004750 <prvHeapInit+0xac>)
  80046b2:	60fb      	str	r3, [r7, #12]
-
-	if( ( uxAddress & portBYTE_ALIGNMENT_MASK ) != 0 )
  80046b4:	68fb      	ldr	r3, [r7, #12]
  80046b6:	f003 0307 	and.w	r3, r3, #7
  80046ba:	2b00      	cmp	r3, #0
  80046bc:	d00c      	beq.n	80046d8 <prvHeapInit+0x34>
-	{
-		uxAddress += ( portBYTE_ALIGNMENT - 1 );
  80046be:	68fb      	ldr	r3, [r7, #12]
  80046c0:	3307      	adds	r3, #7
  80046c2:	60fb      	str	r3, [r7, #12]
-		uxAddress &= ~( ( size_t ) portBYTE_ALIGNMENT_MASK );
  80046c4:	68fb      	ldr	r3, [r7, #12]
  80046c6:	f023 0307 	bic.w	r3, r3, #7
  80046ca:	60fb      	str	r3, [r7, #12]
-		xTotalHeapSize -= uxAddress - ( size_t ) ucHeap;
  80046cc:	68ba      	ldr	r2, [r7, #8]
  80046ce:	68fb      	ldr	r3, [r7, #12]
  80046d0:	1ad3      	subs	r3, r2, r3
  80046d2:	4a1f      	ldr	r2, [pc, #124]	; (8004750 <prvHeapInit+0xac>)
  80046d4:	4413      	add	r3, r2
  80046d6:	60bb      	str	r3, [r7, #8]
-	}
-
-	pucAlignedHeap = ( uint8_t * ) uxAddress;
  80046d8:	68fb      	ldr	r3, [r7, #12]
  80046da:	607b      	str	r3, [r7, #4]
-
-	/* xStart is used to hold a pointer to the first item in the list of free
-	blocks.  The void cast is used to prevent compiler warnings. */
-	xStart.pxNextFreeBlock = ( void * ) pucAlignedHeap;
  80046dc:	4a1d      	ldr	r2, [pc, #116]	; (8004754 <prvHeapInit+0xb0>)
  80046de:	687b      	ldr	r3, [r7, #4]
  80046e0:	6013      	str	r3, [r2, #0]
-	xStart.xBlockSize = ( size_t ) 0;
  80046e2:	4b1c      	ldr	r3, [pc, #112]	; (8004754 <prvHeapInit+0xb0>)
  80046e4:	2200      	movs	r2, #0
  80046e6:	605a      	str	r2, [r3, #4]
-
-	/* pxEnd is used to mark the end of the list of free blocks and is inserted
-	at the end of the heap space. */
-	uxAddress = ( ( size_t ) pucAlignedHeap ) + xTotalHeapSize;
  80046e8:	687b      	ldr	r3, [r7, #4]
  80046ea:	68ba      	ldr	r2, [r7, #8]
  80046ec:	4413      	add	r3, r2
  80046ee:	60fb      	str	r3, [r7, #12]
-	uxAddress -= xHeapStructSize;
  80046f0:	2208      	movs	r2, #8
  80046f2:	68fb      	ldr	r3, [r7, #12]
  80046f4:	1a9b      	subs	r3, r3, r2
  80046f6:	60fb      	str	r3, [r7, #12]
-	uxAddress &= ~( ( size_t ) portBYTE_ALIGNMENT_MASK );
  80046f8:	68fb      	ldr	r3, [r7, #12]
  80046fa:	f023 0307 	bic.w	r3, r3, #7
  80046fe:	60fb      	str	r3, [r7, #12]
-	pxEnd = ( void * ) uxAddress;
  8004700:	68fb      	ldr	r3, [r7, #12]
  8004702:	4a15      	ldr	r2, [pc, #84]	; (8004758 <prvHeapInit+0xb4>)
  8004704:	6013      	str	r3, [r2, #0]
-	pxEnd->xBlockSize = 0;
  8004706:	4b14      	ldr	r3, [pc, #80]	; (8004758 <prvHeapInit+0xb4>)
  8004708:	681b      	ldr	r3, [r3, #0]
  800470a:	2200      	movs	r2, #0
  800470c:	605a      	str	r2, [r3, #4]
-	pxEnd->pxNextFreeBlock = NULL;
  800470e:	4b12      	ldr	r3, [pc, #72]	; (8004758 <prvHeapInit+0xb4>)
  8004710:	681b      	ldr	r3, [r3, #0]
  8004712:	2200      	movs	r2, #0
  8004714:	601a      	str	r2, [r3, #0]
-
-	/* To start with there is a single free block that is sized to take up the
-	entire heap space, minus the space taken by pxEnd. */
-	pxFirstFreeBlock = ( void * ) pucAlignedHeap;
  8004716:	687b      	ldr	r3, [r7, #4]
  8004718:	603b      	str	r3, [r7, #0]
-	pxFirstFreeBlock->xBlockSize = uxAddress - ( size_t ) pxFirstFreeBlock;
  800471a:	683b      	ldr	r3, [r7, #0]
  800471c:	68fa      	ldr	r2, [r7, #12]
  800471e:	1ad2      	subs	r2, r2, r3
  8004720:	683b      	ldr	r3, [r7, #0]
  8004722:	605a      	str	r2, [r3, #4]
-	pxFirstFreeBlock->pxNextFreeBlock = pxEnd;
  8004724:	4b0c      	ldr	r3, [pc, #48]	; (8004758 <prvHeapInit+0xb4>)
  8004726:	681a      	ldr	r2, [r3, #0]
  8004728:	683b      	ldr	r3, [r7, #0]
  800472a:	601a      	str	r2, [r3, #0]
-
-	/* Only one block exists - and it covers the entire usable heap space. */
-	xMinimumEverFreeBytesRemaining = pxFirstFreeBlock->xBlockSize;
  800472c:	683b      	ldr	r3, [r7, #0]
  800472e:	685b      	ldr	r3, [r3, #4]
  8004730:	4a0a      	ldr	r2, [pc, #40]	; (800475c <prvHeapInit+0xb8>)
  8004732:	6013      	str	r3, [r2, #0]
-	xFreeBytesRemaining = pxFirstFreeBlock->xBlockSize;
  8004734:	683b      	ldr	r3, [r7, #0]
  8004736:	685b      	ldr	r3, [r3, #4]
  8004738:	4a09      	ldr	r2, [pc, #36]	; (8004760 <prvHeapInit+0xbc>)
  800473a:	6013      	str	r3, [r2, #0]
-
-	/* Work out the position of the top bit in a size_t variable. */
-	xBlockAllocatedBit = ( ( size_t ) 1 ) << ( ( sizeof( size_t ) * heapBITS_PER_BYTE ) - 1 );
  800473c:	4b09      	ldr	r3, [pc, #36]	; (8004764 <prvHeapInit+0xc0>)
  800473e:	f04f 4200 	mov.w	r2, #2147483648	; 0x80000000
  8004742:	601a      	str	r2, [r3, #0]
-}
  8004744:	bf00      	nop
  8004746:	3714      	adds	r7, #20
  8004748:	46bd      	mov	sp, r7
@@ -12199,20 +10678,10 @@ size_t xTotalHeapSize = configTOTAL_HEAP_SIZE;
  8004764:	20000ec8 	.word	0x20000ec8
 
 08004768 <prvInsertBlockIntoFreeList>:
-/*-----------------------------------------------------------*/
-
-static void prvInsertBlockIntoFreeList( BlockLink_t *pxBlockToInsert )
-{
  8004768:	b480      	push	{r7}
  800476a:	b085      	sub	sp, #20
  800476c:	af00      	add	r7, sp, #0
  800476e:	6078      	str	r0, [r7, #4]
-BlockLink_t *pxIterator;
-uint8_t *puc;
-
-	/* Iterate through the list until a block is found that has a higher address
-	than the block being inserted. */
-	for( pxIterator = &xStart; pxIterator->pxNextFreeBlock < pxBlockToInsert; pxIterator = pxIterator->pxNextFreeBlock )
  8004770:	4b28      	ldr	r3, [pc, #160]	; (8004814 <prvInsertBlockIntoFreeList+0xac>)
  8004772:	60fb      	str	r3, [r7, #12]
  8004774:	e002      	b.n	800477c <prvInsertBlockIntoFreeList+0x14>
@@ -12224,15 +10693,8 @@ uint8_t *puc;
  8004780:	687a      	ldr	r2, [r7, #4]
  8004782:	429a      	cmp	r2, r3
  8004784:	d8f7      	bhi.n	8004776 <prvInsertBlockIntoFreeList+0xe>
-		/* Nothing to do here, just iterate to the right position. */
-	}
-
-	/* Do the block being inserted, and the block it is being inserted after
-	make a contiguous block of memory? */
-	puc = ( uint8_t * ) pxIterator;
  8004786:	68fb      	ldr	r3, [r7, #12]
  8004788:	60bb      	str	r3, [r7, #8]
-	if( ( puc + pxIterator->xBlockSize ) == ( uint8_t * ) pxBlockToInsert )
  800478a:	68fb      	ldr	r3, [r7, #12]
  800478c:	685b      	ldr	r3, [r3, #4]
  800478e:	68ba      	ldr	r2, [r7, #8]
@@ -12240,8 +10702,6 @@ uint8_t *puc;
  8004792:	687a      	ldr	r2, [r7, #4]
  8004794:	429a      	cmp	r2, r3
  8004796:	d108      	bne.n	80047aa <prvInsertBlockIntoFreeList+0x42>
-	{
-		pxIterator->xBlockSize += pxBlockToInsert->xBlockSize;
  8004798:	68fb      	ldr	r3, [r7, #12]
  800479a:	685a      	ldr	r2, [r3, #4]
  800479c:	687b      	ldr	r3, [r7, #4]
@@ -12249,18 +10709,10 @@ uint8_t *puc;
  80047a0:	441a      	add	r2, r3
  80047a2:	68fb      	ldr	r3, [r7, #12]
  80047a4:	605a      	str	r2, [r3, #4]
-		pxBlockToInsert = pxIterator;
  80047a6:	68fb      	ldr	r3, [r7, #12]
  80047a8:	607b      	str	r3, [r7, #4]
-		mtCOVERAGE_TEST_MARKER();
-	}
-
-	/* Do the block being inserted, and the block it is being inserted before
-	make a contiguous block of memory? */
-	puc = ( uint8_t * ) pxBlockToInsert;
  80047aa:	687b      	ldr	r3, [r7, #4]
  80047ac:	60bb      	str	r3, [r7, #8]
-	if( ( puc + pxBlockToInsert->xBlockSize ) == ( uint8_t * ) pxIterator->pxNextFreeBlock )
  80047ae:	687b      	ldr	r3, [r7, #4]
  80047b0:	685b      	ldr	r3, [r3, #4]
  80047b2:	68ba      	ldr	r2, [r7, #8]
@@ -12269,17 +10721,12 @@ uint8_t *puc;
  80047b8:	681b      	ldr	r3, [r3, #0]
  80047ba:	429a      	cmp	r2, r3
  80047bc:	d118      	bne.n	80047f0 <prvInsertBlockIntoFreeList+0x88>
-	{
-		if( pxIterator->pxNextFreeBlock != pxEnd )
  80047be:	68fb      	ldr	r3, [r7, #12]
  80047c0:	681a      	ldr	r2, [r3, #0]
  80047c2:	4b15      	ldr	r3, [pc, #84]	; (8004818 <prvInsertBlockIntoFreeList+0xb0>)
  80047c4:	681b      	ldr	r3, [r3, #0]
  80047c6:	429a      	cmp	r2, r3
  80047c8:	d00d      	beq.n	80047e6 <prvInsertBlockIntoFreeList+0x7e>
-		{
-			/* Form one big block from the two blocks. */
-			pxBlockToInsert->xBlockSize += pxIterator->pxNextFreeBlock->xBlockSize;
  80047ca:	687b      	ldr	r3, [r7, #4]
  80047cc:	685a      	ldr	r2, [r3, #4]
  80047ce:	68fb      	ldr	r3, [r7, #12]
@@ -12288,52 +10735,28 @@ uint8_t *puc;
  80047d4:	441a      	add	r2, r3
  80047d6:	687b      	ldr	r3, [r7, #4]
  80047d8:	605a      	str	r2, [r3, #4]
-			pxBlockToInsert->pxNextFreeBlock = pxIterator->pxNextFreeBlock->pxNextFreeBlock;
  80047da:	68fb      	ldr	r3, [r7, #12]
  80047dc:	681b      	ldr	r3, [r3, #0]
  80047de:	681a      	ldr	r2, [r3, #0]
  80047e0:	687b      	ldr	r3, [r7, #4]
  80047e2:	601a      	str	r2, [r3, #0]
  80047e4:	e008      	b.n	80047f8 <prvInsertBlockIntoFreeList+0x90>
-		}
-		else
-		{
-			pxBlockToInsert->pxNextFreeBlock = pxEnd;
  80047e6:	4b0c      	ldr	r3, [pc, #48]	; (8004818 <prvInsertBlockIntoFreeList+0xb0>)
  80047e8:	681a      	ldr	r2, [r3, #0]
  80047ea:	687b      	ldr	r3, [r7, #4]
  80047ec:	601a      	str	r2, [r3, #0]
  80047ee:	e003      	b.n	80047f8 <prvInsertBlockIntoFreeList+0x90>
-		}
-	}
-	else
-	{
-		pxBlockToInsert->pxNextFreeBlock = pxIterator->pxNextFreeBlock;
  80047f0:	68fb      	ldr	r3, [r7, #12]
  80047f2:	681a      	ldr	r2, [r3, #0]
  80047f4:	687b      	ldr	r3, [r7, #4]
  80047f6:	601a      	str	r2, [r3, #0]
-
-	/* If the block being inserted plugged a gab, so was merged with the block
-	before and the block after, then it's pxNextFreeBlock pointer will have
-	already been set, and should not be set here as that would make it point
-	to itself. */
-	if( pxIterator != pxBlockToInsert )
  80047f8:	68fa      	ldr	r2, [r7, #12]
  80047fa:	687b      	ldr	r3, [r7, #4]
  80047fc:	429a      	cmp	r2, r3
  80047fe:	d002      	beq.n	8004806 <prvInsertBlockIntoFreeList+0x9e>
-	{
-		pxIterator->pxNextFreeBlock = pxBlockToInsert;
  8004800:	68fb      	ldr	r3, [r7, #12]
  8004802:	687a      	ldr	r2, [r7, #4]
  8004804:	601a      	str	r2, [r3, #0]
-	}
-	else
-	{
-		mtCOVERAGE_TEST_MARKER();
-	}
-}
  8004806:	bf00      	nop
  8004808:	3714      	adds	r7, #20
  800480a:	46bd      	mov	sp, r7
