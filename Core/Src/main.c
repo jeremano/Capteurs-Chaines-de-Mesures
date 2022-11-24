@@ -23,6 +23,7 @@
 #include "i2c.h"
 #include "usart.h"
 #include "gpio.h"
+#include "function.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -36,7 +37,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+#define AdressMPU 0xd0
+#define AdressBMP 0xee
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -138,18 +140,37 @@ int main(void)
       uint8_t data[48];
       data[0]=0x75;
       printf("Registre d'identification : %x\r\n",data[0]);
-      if(HAL_I2C_Master_Transmit(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY) != HAL_OK){
+      if(HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
     	  Error_Handler();
       }
-      if(HAL_I2C_Master_Receive(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY) != HAL_OK){
+      if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
     	  Error_Handler();
       }
       printf("Valeur recu : %x\r\n",data[0]);
       if (data[0]!=0x71){
     	  printf("Error !\r\n");
+    	  Error_Handler();
       }
       else{
-    	  printf("Ok !");
+    	  printf("Ok !\r\n");
+      }
+	  printf("\r\n");
+      printf("-- Test de l'identite du capteur BPM-280 --\r\n");
+      data[0]=0xd0;
+      printf("Registre d'identification : %x\r\n",data[0]);
+      if(HAL_I2C_Master_Transmit(&hi2c1,AdressBMP, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	  Error_Handler();
+      }
+      if(HAL_I2C_Master_Receive(&hi2c1,AdressBMP, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	  Error_Handler();
+      }
+      printf("Valeur recu : %x\r\n",data[0]);
+      if (data[0]!=0x58){
+    	  printf("Error !\r\n");
+    	  Error_Handler();
+      }
+      else{
+    	  printf("Ok !\r\n");
       }
   /* USER CODE END 2 */
 
