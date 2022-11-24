@@ -79,7 +79,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-	printf("Test\r\n");
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -120,30 +120,31 @@ int main(void)
     BSP_LCD_Clear(LCD_COLOR_WHITE);
     */
     // Go through all possible i2c addresses
-      printf("-- Test des adresses disponibles --\r\n");
-
+	printf("\r\n");
+	printf("\r\n");
+    printf("-- Test des adresses disponibles --\r\n");
     	for (uint8_t i = 0; i < 128; i++) {
-
     	  if (HAL_I2C_IsDeviceReady(&hi2c1, (uint16_t)(i<<1), 3, 5) == HAL_OK) {
-    		  // We got an ack
     		  printf("%2x ", i);
     	  } else {
     		  printf("-- ");
     	  }
-
     	  if (i > 0 && (i + 1) % 16 == 0) printf("\n\r");
-
       }
 
       printf("\n\r");
 
-      printf("-- Test de l'identité du capteur MPU-9250 --\r\n");
+      printf("-- Test de l'identite du capteur MPU-9250 --\r\n");
       uint8_t data[48];
       data[0]=0x75;
       printf("Registre d'identification : %x\r\n",data[0]);
-      HAL_I2C_Master_Transmit(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY);
-      HAL_I2C_Master_Receive(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY);
-      printf("Valeur reçu : %x\r\n",data[0]);
+      if(HAL_I2C_Master_Transmit(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	  Error_Handler();
+      }
+      if(HAL_I2C_Master_Receive(&hi2c1,0xd0, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	  Error_Handler();
+      }
+      printf("Valeur recu : %x\r\n",data[0]);
       if (data[0]!=0x71){
     	  printf("Error !\r\n");
       }
@@ -228,6 +229,13 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+	printf("Une erreur est survenue ! Arret du programme\r\n");
+	while(1){
+		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET);
+	    HAL_Delay(200);
+	    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET);
+	    HAL_Delay(200);
+	}
 
   /* USER CODE END Error_Handler_Debug */
 }
