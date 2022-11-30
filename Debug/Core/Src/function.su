@@ -1,1 +1,2 @@
-../Core/Src/function.c:36:6:Init	24	static
+../Core/Src/function.c:38:6:InitCapteur	24	static
+../Core/Src/function.c:63:6:Measure_T	32	static

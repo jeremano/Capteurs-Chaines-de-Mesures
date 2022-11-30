@@ -35,7 +35,7 @@
 uint8_t data[48];
 
 
-void Init(I2C_HandleTypeDef* i2cHandle){
+void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 
 	  if(i2cHandle->Instance==I2C1)
 	  {
@@ -55,5 +55,23 @@ void Init(I2C_HandleTypeDef* i2cHandle){
 	data[0]=RegisterCLKSEL;
 	data[1]=ValueCLKSEL;
 	HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 2, HAL_MAX_DELAY);
+
+
 	  }
+}
+
+void Measure_T(I2C_HandleTypeDef* i2cHandle,double *Temp){
+	if(i2cHandle->Instance==I2C1)
+		  {
+		data[0]=TEMP_OUT_H;
+		if(HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		uint8_t Raw [2];
+		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, Raw, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+		HAL_Delay(1000);
+		*Temp = (((Raw[0]<<8)+(Raw[1]) - ROOM_TEMP_OFFSET)/TEMP_SENS) + ROOM_TEMP_OFFSET;
+		  }
 }

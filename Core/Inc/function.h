@@ -20,4 +20,5 @@
 
 
 
-void Init(I2C_HandleTypeDef*);
+void InitCapteur(I2C_HandleTypeDef*);
+void Measure_T(I2C_HandleTypeDef* i2cHandle,double* Temp);

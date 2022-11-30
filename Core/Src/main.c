@@ -55,6 +55,7 @@
 /* USER CODE BEGIN PV */
 
 char mess[30];
+double Temp = 0;
 
 /* USER CODE END PV */
 
@@ -108,6 +109,8 @@ int main(void)
   	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_SET);
     HAL_Delay(2000);
     HAL_GPIO_WritePin(GPIOA,GPIO_PIN_5,GPIO_PIN_RESET);
+
+    InitCapteur(&hi2c1);
 
     /*Test écran LCD*/
     /*
@@ -171,6 +174,16 @@ int main(void)
       }
       else{
     	  printf("Ok !\r\n");
+      }
+
+      while (1)
+      {
+    	Measure_T(&hi2c1,&Temp);
+        printf("Temperature : %f\r\n",&Temp);
+    	HAL_Delay(1000);
+        /* USER CODE END WHILE */
+
+        /* USER CODE BEGIN 3 */
       }
   /* USER CODE END 2 */
 
