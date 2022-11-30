@@ -28,8 +28,10 @@
 #define AdressBMP 0xee
 #define RegisterResetMPU 0x6b
 #define RegisterResetBMP 0xe0
+#define RegisterCLKSEL 0x6b
 #define ValueResetMPU 0x80
 #define ValueResetBMP 0xb6
+#define ValueCLKSEL 0x02
 uint8_t data[48];
 
 
@@ -49,5 +51,9 @@ void Init(I2C_HandleTypeDef* i2cHandle){
 
 	HAL_Delay(100);
 
+	/* Choix de l'horloge */
+	data[0]=RegisterCLKSEL;
+	data[1]=ValueCLKSEL;
+	HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 2, HAL_MAX_DELAY);
 	  }
 }
