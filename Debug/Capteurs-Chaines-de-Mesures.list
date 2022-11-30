@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  000201dc  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00013a76  00000000  00000000  0002020c  2**0
+ 12 .debug_info   00013ad6  00000000  00000000  0002020c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00002d72  00000000  00000000  00033c82  2**0
+ 13 .debug_abbrev 00002d58  00000000  00000000  00033ce2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000fc0  00000000  00000000  000369f8  2**3
+ 14 .debug_aranges 00000fc8  00000000  00000000  00036a40  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000e78  00000000  00000000  000379b8  2**3
+ 15 .debug_ranges 00000e80  00000000  00000000  00037a08  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00004d5e  00000000  00000000  00038830  2**0
+ 16 .debug_macro  00004d5e  00000000  00000000  00038888  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00014879  00000000  00000000  0003d58e  2**0
+ 17 .debug_line   00014b8f  00000000  00000000  0003d5e6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000c35a8  00000000  00000000  00051e07  2**0
+ 18 .debug_str    000c35ba  00000000  00000000  00052175  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  001153af  2**0
+ 19 .comment      00000050  00000000  00000000  0011572f  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000503c  00000000  00000000  00115400  2**2
+ 20 .debug_frame  00005064  00000000  00000000  00115780  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1300,7 +1300,7 @@ void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 
 void Measure_T(I2C_HandleTypeDef* i2cHandle,double *Temp){
  8000f88:	b580      	push	{r7, lr}
- 8000f8a:	b086      	sub	sp, #24
+ 8000f8a:	b084      	sub	sp, #16
  8000f8c:	af02      	add	r7, sp, #8
  8000f8e:	6078      	str	r0, [r7, #4]
  8000f90:	6039      	str	r1, [r7, #0]
@@ -1309,7 +1309,7 @@ void Measure_T(I2C_HandleTypeDef* i2cHandle,double *Temp){
  8000f94:	681b      	ldr	r3, [r3, #0]
  8000f96:	4a26      	ldr	r2, [pc, #152]	; (8001030 <Measure_T+0xa8>)
  8000f98:	4293      	cmp	r3, r2
- 8000f9a:	d13e      	bne.n	800101a <Measure_T+0x92>
+ 8000f9a:	d13f      	bne.n	800101c <Measure_T+0x94>
 		  {
 		data[0]=TEMP_OUT_H;
  8000f9c:	4b25      	ldr	r3, [pc, #148]	; (8001034 <Measure_T+0xac>)
@@ -1329,53 +1329,53 @@ void Measure_T(I2C_HandleTypeDef* i2cHandle,double *Temp){
 	    	  	  Error_Handler();
  8000fba:	f000 faa9 	bl	8001510 <Error_Handler>
 			  }
-		uint8_t Raw [2];
-		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, Raw, 2, HAL_MAX_DELAY) != HAL_OK){
- 8000fbe:	f107 020c 	add.w	r2, r7, #12
- 8000fc2:	f04f 33ff 	mov.w	r3, #4294967295
- 8000fc6:	9300      	str	r3, [sp, #0]
- 8000fc8:	2302      	movs	r3, #2
- 8000fca:	21d0      	movs	r1, #208	; 0xd0
- 8000fcc:	481a      	ldr	r0, [pc, #104]	; (8001038 <Measure_T+0xb0>)
- 8000fce:	f001 f93f 	bl	8002250 <HAL_I2C_Master_Receive>
- 8000fd2:	4603      	mov	r3, r0
- 8000fd4:	2b00      	cmp	r3, #0
- 8000fd6:	d001      	beq.n	8000fdc <Measure_T+0x54>
+		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, data, 2, HAL_MAX_DELAY) != HAL_OK){
+ 8000fbe:	f04f 33ff 	mov.w	r3, #4294967295
+ 8000fc2:	9300      	str	r3, [sp, #0]
+ 8000fc4:	2302      	movs	r3, #2
+ 8000fc6:	4a1b      	ldr	r2, [pc, #108]	; (8001034 <Measure_T+0xac>)
+ 8000fc8:	21d0      	movs	r1, #208	; 0xd0
+ 8000fca:	481b      	ldr	r0, [pc, #108]	; (8001038 <Measure_T+0xb0>)
+ 8000fcc:	f001 f940 	bl	8002250 <HAL_I2C_Master_Receive>
+ 8000fd0:	4603      	mov	r3, r0
+ 8000fd2:	2b00      	cmp	r3, #0
+ 8000fd4:	d001      	beq.n	8000fda <Measure_T+0x52>
 		    	  Error_Handler();
- 8000fd8:	f000 fa9a 	bl	8001510 <Error_Handler>
+ 8000fd6:	f000 fa9b 	bl	8001510 <Error_Handler>
 		      }
 		HAL_Delay(1000);
- 8000fdc:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
- 8000fe0:	f000 fd12 	bl	8001a08 <HAL_Delay>
-		*Temp = (((Raw[0]<<8)+(Raw[1]) - ROOM_TEMP_OFFSET)/TEMP_SENS) + ROOM_TEMP_OFFSET;
- 8000fe4:	7b3b      	ldrb	r3, [r7, #12]
+ 8000fda:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+ 8000fde:	f000 fd13 	bl	8001a08 <HAL_Delay>
+		*Temp = (((data[0]<<8)+(data[1]) - ROOM_TEMP_OFFSET)/TEMP_SENS) + ROOM_TEMP_OFFSET;
+ 8000fe2:	4b14      	ldr	r3, [pc, #80]	; (8001034 <Measure_T+0xac>)
+ 8000fe4:	781b      	ldrb	r3, [r3, #0]
  8000fe6:	021b      	lsls	r3, r3, #8
- 8000fe8:	7b7a      	ldrb	r2, [r7, #13]
- 8000fea:	4413      	add	r3, r2
- 8000fec:	3b15      	subs	r3, #21
- 8000fee:	4618      	mov	r0, r3
- 8000ff0:	f7ff fac0 	bl	8000574 <__aeabi_i2d>
- 8000ff4:	a30c      	add	r3, pc, #48	; (adr r3, 8001028 <Measure_T+0xa0>)
- 8000ff6:	e9d3 2300 	ldrd	r2, r3, [r3]
- 8000ffa:	f7ff fc4f 	bl	800089c <__aeabi_ddiv>
- 8000ffe:	4602      	mov	r2, r0
- 8001000:	460b      	mov	r3, r1
- 8001002:	4610      	mov	r0, r2
- 8001004:	4619      	mov	r1, r3
- 8001006:	f04f 0200 	mov.w	r2, #0
- 800100a:	4b0c      	ldr	r3, [pc, #48]	; (800103c <Measure_T+0xb4>)
- 800100c:	f7ff f966 	bl	80002dc <__adddf3>
- 8001010:	4602      	mov	r2, r0
- 8001012:	460b      	mov	r3, r1
- 8001014:	6839      	ldr	r1, [r7, #0]
- 8001016:	e9c1 2300 	strd	r2, r3, [r1]
+ 8000fe8:	4a12      	ldr	r2, [pc, #72]	; (8001034 <Measure_T+0xac>)
+ 8000fea:	7852      	ldrb	r2, [r2, #1]
+ 8000fec:	4413      	add	r3, r2
+ 8000fee:	3b15      	subs	r3, #21
+ 8000ff0:	4618      	mov	r0, r3
+ 8000ff2:	f7ff fabf 	bl	8000574 <__aeabi_i2d>
+ 8000ff6:	a30c      	add	r3, pc, #48	; (adr r3, 8001028 <Measure_T+0xa0>)
+ 8000ff8:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 8000ffc:	f7ff fc4e 	bl	800089c <__aeabi_ddiv>
+ 8001000:	4602      	mov	r2, r0
+ 8001002:	460b      	mov	r3, r1
+ 8001004:	4610      	mov	r0, r2
+ 8001006:	4619      	mov	r1, r3
+ 8001008:	f04f 0200 	mov.w	r2, #0
+ 800100c:	4b0b      	ldr	r3, [pc, #44]	; (800103c <Measure_T+0xb4>)
+ 800100e:	f7ff f965 	bl	80002dc <__adddf3>
+ 8001012:	4602      	mov	r2, r0
+ 8001014:	460b      	mov	r3, r1
+ 8001016:	6839      	ldr	r1, [r7, #0]
+ 8001018:	e9c1 2300 	strd	r2, r3, [r1]
 		  }
 }
- 800101a:	bf00      	nop
- 800101c:	3710      	adds	r7, #16
- 800101e:	46bd      	mov	sp, r7
- 8001020:	bd80      	pop	{r7, pc}
- 8001022:	bf00      	nop
+ 800101c:	bf00      	nop
+ 800101e:	3708      	adds	r7, #8
+ 8001020:	46bd      	mov	sp, r7
+ 8001022:	bd80      	pop	{r7, pc}
  8001024:	f3af 8000 	nop.w
  8001028:	851eb852 	.word	0x851eb852
  800102c:	4074ddeb 	.word	0x4074ddeb
@@ -2008,7 +2008,7 @@ int main(void)
 
       while (1)
       {
-    	Measure_T(&hi2c1,&Temp);
+      	Measure_T(&hi2c1,&Temp);
  8001426:	4912      	ldr	r1, [pc, #72]	; (8001470 <main+0x1e8>)
  8001428:	4805      	ldr	r0, [pc, #20]	; (8001440 <main+0x1b8>)
  800142a:	f7ff fdad 	bl	8000f88 <Measure_T>
@@ -2016,10 +2016,14 @@ int main(void)
  800142e:	4910      	ldr	r1, [pc, #64]	; (8001470 <main+0x1e8>)
  8001430:	4810      	ldr	r0, [pc, #64]	; (8001474 <main+0x1ec>)
  8001432:	f004 f915 	bl	8005660 <iprintf>
-    	HAL_Delay(1000);
- 8001436:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+    	/*Measure_A(&hi2c1,&AccelX,&AccelY,&AccelZ);
+        printf("AccelerationX : %ld\r\n",AccelX);
+        printf("AccelerationY : %ld\r\n",AccelY);
+        printf("AccelerationZ : %ld\r\n",AccelZ);*/
+    	HAL_Delay(500);
+ 8001436:	f44f 70fa 	mov.w	r0, #500	; 0x1f4
  800143a:	f000 fae5 	bl	8001a08 <HAL_Delay>
-    	Measure_T(&hi2c1,&Temp);
+      	Measure_T(&hi2c1,&Temp);
  800143e:	e7f2      	b.n	8001426 <main+0x19e>
  8001440:	2000022c 	.word	0x2000022c
  8001444:	080078d0 	.word	0x080078d0

@@ -67,11 +67,26 @@ void Measure_T(I2C_HandleTypeDef* i2cHandle,double *Temp){
 		if(HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
 	    	  	  Error_Handler();
 			  }
-		uint8_t Raw [2];
-		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, Raw, 2, HAL_MAX_DELAY) != HAL_OK){
+		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, data, 2, HAL_MAX_DELAY) != HAL_OK){
 		    	  Error_Handler();
 		      }
 		HAL_Delay(1000);
-		*Temp = (((Raw[0]<<8)+(Raw[1]) - ROOM_TEMP_OFFSET)/TEMP_SENS) + ROOM_TEMP_OFFSET;
+		*Temp = (((data[0]<<8)+(data[1]) - ROOM_TEMP_OFFSET)/TEMP_SENS) + ROOM_TEMP_OFFSET;
 		  }
 }
+
+void Measure_A(I2C_HandleTypeDef* i2cHandle,double* AccelX,double* AccelY,double* AccelZ){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=ACCEL_XOUT_H;
+		if(HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, data, 6, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+		*AccelX = ((data[0]<<8)+(data[1]))/10;
+		*AccelY = ((data[2]<<8)+(data[3]))/10;
+		*AccelZ = ((data[4]<<8)+(data[5]))/10;
+	}
+}
+

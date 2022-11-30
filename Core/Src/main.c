@@ -56,6 +56,9 @@
 
 char mess[30];
 double Temp = 0;
+double AccelX = 0;
+double AccelY = 0;
+double AccelZ = 0;
 
 /* USER CODE END PV */
 
@@ -178,9 +181,13 @@ int main(void)
 
       while (1)
       {
-    	Measure_T(&hi2c1,&Temp);
+      	Measure_T(&hi2c1,&Temp);
         printf("Temperature : %f\r\n",&Temp);
-    	HAL_Delay(1000);
+    	/*Measure_A(&hi2c1,&AccelX,&AccelY,&AccelZ);
+        printf("AccelerationX : %ld\r\n",&AccelX);
+        printf("AccelerationY : %ld\r\n",&AccelY);
+        printf("AccelerationZ : %ld\r\n",&AccelZ);*/
+    	HAL_Delay(500);
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
