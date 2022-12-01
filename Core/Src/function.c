@@ -84,9 +84,9 @@ void Measure_A(I2C_HandleTypeDef* i2cHandle,double* AccelX,double* AccelY,double
 		if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, data, 6, HAL_MAX_DELAY) != HAL_OK){
 		    	  Error_Handler();
 		      }
-		*AccelX = ((data[0]<<8)+(data[1]))/10;
-		*AccelY = ((data[2]<<8)+(data[3]))/10;
-		*AccelZ = ((data[4]<<8)+(data[5]))/10;
+		*AccelX = ((data[0]<<8)+(data[1]))/1000;
+		*AccelY = ((data[2]<<8)+(data[3]))/1000;
+		*AccelZ = ((data[4]<<8)+(data[5]))/1000;
 	}
 }
 
