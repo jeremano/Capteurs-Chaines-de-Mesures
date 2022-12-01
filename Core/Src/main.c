@@ -37,12 +37,12 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define AdressMPU 0xd0
-#define AdressBMP 0xee
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define AdressBMP 0xee
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,13 +53,12 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+//!< Variables
 char mess[30];
 double Temp = 0;
 double AccelX = 0;
 double AccelY = 0;
 double AccelZ = 0;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,6 +70,7 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+//!<fonction de transmission UART lors de l'utilisation de "printf"
 int __io_putchar(int ch) {
 	HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
 return ch;
@@ -128,6 +128,11 @@ int main(void)
     BSP_LCD_Clear(LCD_COLOR_WHITE);
     */
     // Go through all possible i2c addresses
+
+    /**
+     * Scan du BUS I2C
+     * Renvoie les adresses disponibles sur la console UART
+     */
 	printf("\r\n");
 	printf("\r\n");
     printf("-- Test des adresses disponibles --\r\n");
@@ -142,14 +147,17 @@ int main(void)
 
       printf("\n\r");
 
+      /**
+       * Requete d'identification du capteur gyroscopique
+       */
       printf("-- Test de l'identite du capteur MPU-9250 --\r\n");
       uint8_t data[48];
       data[0]=0x75;
       printf("Registre d'identification : %x\r\n",data[0]);
-      if(HAL_I2C_Master_Transmit(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
+      if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
     	  Error_Handler();
       }
-      if(HAL_I2C_Master_Receive(&hi2c1,AdressMPU, data, 1, HAL_MAX_DELAY) != HAL_OK){
+      if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
     	  Error_Handler();
       }
       printf("Valeur recu : %x\r\n",data[0]);
@@ -160,7 +168,11 @@ int main(void)
       else{
     	  printf("Ok !\r\n");
       }
-	  printf("\r\n");
+
+      /**
+       * Requete d'identification du capteur temperature/pression
+       */
+      printf("\r\n");
       printf("-- Test de l'identite du capteur BPM-280 --\r\n");
       data[0]=0xd0;
       printf("Registre d'identification : %x\r\n",data[0]);
@@ -179,6 +191,11 @@ int main(void)
     	  printf("Ok !\r\n");
       }
 
+      /**
+       * Mesure cyclique de la temperature et de l'acceleration
+       * La mesure se fait toutes les secondes
+       * Les fonctions de mesures sont ecrites dans le fichier function.c
+       */
       while (1)
       {
       	Measure_T(&hi2c1,&Temp);
@@ -190,9 +207,6 @@ int main(void)
     	Measure_AZ(&hi2c1,&AccelZ);
         printf("AZ %f\r\n",&AccelZ);
     	HAL_Delay(1000);
-        /* USER CODE END WHILE */
-
-        /* USER CODE BEGIN 3 */
       }
   /* USER CODE END 2 */
 
