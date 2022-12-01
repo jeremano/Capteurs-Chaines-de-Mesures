@@ -183,11 +183,13 @@ int main(void)
       {
       	Measure_T(&hi2c1,&Temp);
         printf("Temperature : %f\r\n",&Temp);
-    	Measure_A(&hi2c1,&AccelX,&AccelY,&AccelZ);
+    	Measure_AX(&hi2c1,&AccelX);
         printf("AX %f\r\n",&AccelX);
+    	Measure_AY(&hi2c1,&AccelY);
         printf("AY %f\r\n",&AccelY);
+    	Measure_AZ(&hi2c1,&AccelZ);
         printf("AZ %f\r\n",&AccelZ);
-    	HAL_Delay(500);
+    	HAL_Delay(1000);
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */

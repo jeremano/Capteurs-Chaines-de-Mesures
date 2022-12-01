@@ -1,3 +1,5 @@
 ../Core/Src/function.c:38:6:InitCapteur	24	static
 ../Core/Src/function.c:63:6:Measure_T	24	static
-../Core/Src/function.c:78:6:Measure_A	32	static
+../Core/Src/function.c:77:6:Measure_AX	24	static
+../Core/Src/function.c:90:6:Measure_AY	24	static
+../Core/Src/function.c:103:6:Measure_AZ	24	static
