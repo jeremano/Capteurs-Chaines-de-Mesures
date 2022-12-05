@@ -24,6 +24,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "function.h"
+#include "math.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -59,6 +60,9 @@ double Temp = 0;
 double AccelX = 0;
 double AccelY = 0;
 double AccelZ = 0;
+double GyroX = 0;
+double GyroY = 0;
+double GyroZ = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -198,15 +202,39 @@ int main(void)
        */
       while (1)
       {
-      	Measure_T(&hi2c1,&Temp);
-        printf("Temperature : %f\r\n",&Temp);
+    	/***** Température *****/
+      	/*Measure_T(&hi2c1,&Temp);
+        printf("Temperature : %f\r\n",&Temp);*/
+
+    	/***** Accélération *****/
+    	/*AccelOffSet();
     	Measure_AX(&hi2c1,&AccelX);
         printf("AX %f\r\n",&AccelX);
     	Measure_AY(&hi2c1,&AccelY);
         printf("AY %f\r\n",&AccelY);
     	Measure_AZ(&hi2c1,&AccelZ);
         printf("AZ %f\r\n",&AccelZ);
-    	HAL_Delay(1000);
+		float Norme = sqrt((AccelX*AccelX)+(AccelY*AccelY)+(AccelZ*AccelZ));
+		printf("Norme = %f\r\n",Norme);*/
+
+
+    	/****** Gyroscope *****/
+      	/*Measure_GX(&hi2c1,&GyroX);
+        printf("GX %f deg/s\r\n",&GyroX);
+      	Measure_GY(&hi2c1,&GyroY);
+        printf("GY %f deg/s\r\n",&GyroY);
+      	Measure_GZ(&hi2c1,&GyroZ);
+        printf("GZ %f deg/s\r\n",&GyroZ);*/
+    	data[0]=0x00;
+  		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+  	    	  	  Error_Handler();
+  			  }
+  		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+  		    	  Error_Handler();
+  		      }
+  		printf("data %x",data[0]);
+        printf("\r\n");
+    	HAL_Delay(100);
       }
   /* USER CODE END 2 */
 

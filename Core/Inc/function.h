@@ -25,3 +25,4 @@ void Measure_T(I2C_HandleTypeDef* i2cHandle,double* Temp);
 void Measure_AX(I2C_HandleTypeDef* i2cHandle,double* AccelX);
 void Measure_AY(I2C_HandleTypeDef* i2cHandle,double* AccelY);
 void Measure_AZ(I2C_HandleTypeDef* i2cHandle,double* AccelY);
+void AccelOffSet(void);

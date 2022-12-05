@@ -32,7 +32,12 @@
 #define ValueResetMPU 0x80
 #define ValueResetBMP 0xb6
 #define ValueCLKSEL 0x02
-uint8_t data[48];
+#define AccelGain 0.938
+#define GyroSensitivity 131
+double XOffSet = 0;
+double YOffSet = 0;
+double ZOffSet = 0;
+uint8_t data[10];
 
 /**
  * @brief			: Fonction d'initialisation du capteur MPU
@@ -51,6 +56,10 @@ void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 	/*!< BMP Reset */
 	data[0]=RegisterResetBMP;
 	data[1]=ValueResetBMP;
+	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
+
+	data[0]=0x37;
+	data[1]=0x02;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
 
 	HAL_Delay(100);
@@ -84,6 +93,60 @@ void Measure_T(I2C_HandleTypeDef* i2cHandle,double *Temp){
 		  }
 }
 
+void AccelOffSet(void){
+    data[0]=0x77;
+    if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	Error_Handler();
+    	}
+    if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	Error_Handler();
+    	}
+    int XOffSetH = data[0];
+    data[0]=0x78;
+    if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	Error_Handler();
+    	}
+    if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+    	Error_Handler();
+    	}
+    int XOffSetL = data[0];
+    XOffSet = ((XOffSetH<<7) + (XOffSetL>>1));
+	data[0]=0x7A;
+	if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    Error_Handler();
+	    }
+	if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    Error_Handler();
+	    }
+	int YOffSetH = data[0];
+	data[0]=0x7B;
+	if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		Error_Handler();
+	    }
+	if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    Error_Handler();
+	    }
+	int YOffSetL = data[0];
+    YOffSet = ((YOffSetH<<7) + (YOffSetL>>1));
+	data[0]=0x7D;
+	if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		Error_Handler();
+		}
+	if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		Error_Handler();
+		}
+	int ZOffSetH = data[0];
+	data[0]=0x7E;
+	if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		Error_Handler();
+		}
+	if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		Error_Handler();
+		}
+	int ZOffSetL = data[0];
+    ZOffSet = ((ZOffSetH<<7) + (ZOffSetL>>1));
+}
+
 /**
  * @brief			: Fonction dDe mesure de l'acceleration
  * 					  suivant X du capteur MPU
@@ -100,7 +163,8 @@ void Measure_AX(I2C_HandleTypeDef* i2cHandle,double* AccelX){
 		if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
 		    	  Error_Handler();
 		      }
-		*AccelX = ((data[0]<<8)+(data[1]))/10;
+		int16_t AccelXRaw = ((data[0]<<8) | data[1]);
+		*AccelX = (AccelGain*AccelXRaw*2)/(32767.0);/*((AccelGain * AccelXRaw) - XOffSet)/32767.0;*/
 	}
 }
 
@@ -120,7 +184,8 @@ void Measure_AY(I2C_HandleTypeDef* i2cHandle,double* AccelY){
 		if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
 		    	  Error_Handler();
 		      }
-		*AccelY = ((data[0]<<8)+(data[1]))/10;
+		int16_t AccelYRaw = ((data[0]<<8) | data[1]);
+		*AccelY = (AccelGain*AccelYRaw*2)/(32767.0);/*((AccelGain * AccelYRaw) - YOffSet)/32767.0;*/
 	}
 }
 
@@ -140,6 +205,63 @@ void Measure_AZ(I2C_HandleTypeDef* i2cHandle,double* AccelZ){
 		if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
 		    	  Error_Handler();
 		      }
-		*AccelZ = ((data[0]<<8)+(data[1]))/10;
+		int16_t AccelZRaw = ((data[0]<<8) | data[1]);  /*= ((data[0]<<8)+(data[1]));*/
+		*AccelZ = (AccelGain*AccelZRaw*2)/(32767.0);/*((AccelGain * AccelZRaw) - ZOffSet)/32767.0;*/
+	}
+}
+
+void Measure_GX(I2C_HandleTypeDef* i2cHandle,double* GyroX){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=GYRO_XOUT_H;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+		int16_t GyroXRaw = ((data[0]<<8) | data[1]);
+		*GyroX = ((GyroXRaw)/(32767.0))*GyroSensitivity;
+	}
+}
+
+/**
+ * @brief			: Fonction dDe mesure de l'acceleration
+ * 					  suivant Y du capteur MPU
+ * @var				: Instance I2C
+ * 					  Pointeur vers la variable acceleration de Y a modifier
+ * @retval			: L'acceleration au travers du pointeur transmis
+ */
+void Measure_GY(I2C_HandleTypeDef* i2cHandle,double* GyroY){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=GYRO_YOUT_H;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+		int16_t GyroYRaw = ((data[0]<<8) | data[1]);
+		*GyroY = ((GyroYRaw)/(32767.0))*GyroSensitivity;
+	}
+}
+
+/**
+ * @brief			: Fonction dDe mesure de l'acceleration
+ * 					  suivant Z du capteur MPU
+ * @var				: Instance I2C
+ * 					  Pointeur vers la variable acceleration de Z a modifier
+ * @retval			: L'acceleration au travers du pointeur transmis
+ */
+void Measure_GZ(I2C_HandleTypeDef* i2cHandle,double* GyroZ){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=GYRO_ZOUT_H;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+		int16_t GyroZRaw = ((data[0]<<8) | data[1]);
+		*GyroZ = ((GyroZRaw)/(32767.0))*GyroSensitivity;
 	}
 }
