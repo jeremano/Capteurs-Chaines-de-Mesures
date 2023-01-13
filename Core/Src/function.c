@@ -1,9 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
+  * @file           : function.h
+  * @brief          : Header for function.c file.
   ******************************************************************************
   * @attention
   *
@@ -44,16 +43,16 @@ uint8_t data[10];
  * @var				: Instance I2C
  * @retval			: None
  */
-void InitCapteur(I2C_HandleTypeDef* i2cHandle){
-
+void InitCapteur(I2C_HandleTypeDef* i2cHandle)
+{
 	if(i2cHandle->Instance==I2C1)
 	{
-	/*!< MPU Reset */
+	/*! MPU Reset */
 	data[0]=RegisterResetMPU;
 	data[1]=ValueResetMPU;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
 
-	/*!< BMP Reset */
+	/*! BMP Reset */
 	data[0]=RegisterResetBMP;
 	data[1]=ValueResetBMP;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
@@ -73,11 +72,10 @@ void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 
 	HAL_Delay(100);
 
-	/*!< Choix de l'horloge */
+	/*! Choix de l'horloge */
 	data[0]=RegisterCLKSEL;
 	data[1]=ValueCLKSEL;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
-
 	}
 }
 
