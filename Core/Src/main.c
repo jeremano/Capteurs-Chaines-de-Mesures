@@ -210,7 +210,13 @@ int main(void)
         printf("Temperature : %f\r\n",&Temp);*/
 
     	/***** Accélération *****/
-    	/*AccelOffSet();
+
+    	/* sensi 4 g */
+    	/*data[0]=ACCEL_CONFIG;
+    	data[1]=0b00001000;
+    	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
+
+    	AccelOffSet();
     	Measure_AX(&hi2c1,&AccelX);
         printf("AX %f m.s^-2\r\n",&AccelX);
     	Measure_AY(&hi2c1,&AccelY);
@@ -224,8 +230,9 @@ int main(void)
         */
 
 
+
     	/****** Gyroscope *****/
-    	/*
+
       	Measure_GX(&hi2c1,&GyroX);
         printf("GX %f deg/s\r\n",&GyroX);
       	Measure_GY(&hi2c1,&GyroY);
@@ -234,7 +241,7 @@ int main(void)
         printf("GZ %f deg/s\r\n",&GyroZ);
         printf("\r\n");
         HAL_Delay(500);
-        */
+
 
 
     	/******	Magnetometre ******/
@@ -253,6 +260,7 @@ int main(void)
         printf("\r\n");
         */
 
+    	/*
       	Measure_MX(&hi2c1,&MagnetoX);
         printf("MX %f µT \r\n",&MagnetoX);
       	Measure_MY(&hi2c1,&MagnetoY);
@@ -262,7 +270,7 @@ int main(void)
         float norme = sqrt(((MagnetoX*MagnetoX)+(MagnetoY*MagnetoY)+(MagnetoZ*MagnetoZ)));
         printf("Norme = %f µT\r\n",norme);
         printf("\r\n");
-    	HAL_Delay(500);
+    	HAL_Delay(500);*/
 
 
       }

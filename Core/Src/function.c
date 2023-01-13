@@ -284,6 +284,13 @@ void Measure_GZ(I2C_HandleTypeDef* i2cHandle,double* GyroZ){
 	}
 }
 
+/**
+ * @brief			: Fonction de mesure du champs magnétique
+ * 					  suivant X du capteur AK8963
+ * @var				: Instance I2C
+ * 					  Pointeur vers la variable magnétique selon X a modifier
+ * @retval			: Le champs magnétique au travers du pointeur transmis
+ */
 void Measure_MX(I2C_HandleTypeDef* i2cHandle,double* MagnetoX){
 	if(i2cHandle->Instance==I2C1){
 		data[0]=AK8963_XOUT_L;
@@ -310,6 +317,13 @@ void Measure_MX(I2C_HandleTypeDef* i2cHandle,double* MagnetoX){
 	}
 }
 
+/**
+ * @brief			: Fonction de mesure du champs magnétique
+ * 					  suivant Y du capteur AK8963
+ * @var				: Instance I2C
+ * 					  Pointeur vers la variable magnétique selon Y a modifier
+ * @retval			: Le champs magnétique au travers du pointeur transmis
+ */
 void Measure_MY(I2C_HandleTypeDef* i2cHandle,double* MagnetoY){
 	if(i2cHandle->Instance==I2C1){
 		data[0]=AK8963_YOUT_L;
@@ -336,6 +350,13 @@ void Measure_MY(I2C_HandleTypeDef* i2cHandle,double* MagnetoY){
 	}
 }
 
+/**
+ * @brief			: Fonction de mesure du champs magnétique
+ * 					  suivant Z du capteur AK8963
+ * @var				: Instance I2C
+ * 					  Pointeur vers la variable magnétique selon Z a modifier
+ * @retval			: Le champs magnétique au travers du pointeur transmis
+ */
 void Measure_MZ(I2C_HandleTypeDef* i2cHandle,double* MagnetoZ){
 	if(i2cHandle->Instance==I2C1){
 		data[0]=AK8963_ZOUT_L;
