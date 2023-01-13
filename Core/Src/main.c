@@ -212,22 +212,29 @@ int main(void)
     	/***** Accélération *****/
     	/*AccelOffSet();
     	Measure_AX(&hi2c1,&AccelX);
-        printf("AX %f\r\n",&AccelX);
+        printf("AX %f m.s^-2\r\n",&AccelX);
     	Measure_AY(&hi2c1,&AccelY);
-        printf("AY %f\r\n",&AccelY);
+        printf("AY %f m.s^-2\r\n",&AccelY);
     	Measure_AZ(&hi2c1,&AccelZ);
-        printf("AZ %f\r\n",&AccelZ);
+        printf("AZ %f m.s^-2\r\n",&AccelZ);
 		float Norme = sqrt((AccelX*AccelX)+(AccelY*AccelY)+(AccelZ*AccelZ));
-		printf("Norme = %f\r\n",Norme);*/
+		printf("Norme = %f \r\n",Norme);
+        printf("\r\n");
+        HAL_Delay(500);
+        */
 
 
     	/****** Gyroscope *****/
-      	/*Measure_GX(&hi2c1,&GyroX);
+    	/*
+      	Measure_GX(&hi2c1,&GyroX);
         printf("GX %f deg/s\r\n",&GyroX);
       	Measure_GY(&hi2c1,&GyroY);
         printf("GY %f deg/s\r\n",&GyroY);
       	Measure_GZ(&hi2c1,&GyroZ);
-        printf("GZ %f deg/s\r\n",&GyroZ);*/
+        printf("GZ %f deg/s\r\n",&GyroZ);
+        printf("\r\n");
+        HAL_Delay(500);
+        */
 
 
     	/******	Magnetometre ******/
@@ -252,8 +259,11 @@ int main(void)
         printf("MY %f µT \r\n",&MagnetoY);
       	Measure_MZ(&hi2c1,&MagnetoZ);
         printf("MZ %f µT \r\n",&MagnetoZ);
+        float norme = sqrt(((MagnetoX*MagnetoX)+(MagnetoY*MagnetoY)+(MagnetoZ*MagnetoZ)));
+        printf("Norme = %f µT\r\n",norme);
         printf("\r\n");
     	HAL_Delay(500);
+
 
       }
   /* USER CODE END 2 */

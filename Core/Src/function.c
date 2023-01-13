@@ -63,11 +63,15 @@ void InitCapteur(I2C_HandleTypeDef* i2cHandle)
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
 
 	data[0]=AK8963_ST1;
-	data[1]=0x1;
+	data[1]=0b00000001;
+	HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY);
+
+	data[0]=AK8963_ST2;
+	data[1]=0b00010000;
 	HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY);
 
 	data[0]=AK8963_CNTL;
-	data[1]=0x16;
+	data[1]=0b00010110;
 	HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY);
 
 	HAL_Delay(100);
@@ -302,7 +306,7 @@ void Measure_MX(I2C_HandleTypeDef* i2cHandle,double* MagnetoX){
 
 		int8_t asaX = data[0];
 
-		*MagnetoX = (MagnetoXRaw*((((asaX-128)*0.5)/128)+1)*4912)/(32767.0);;
+		*MagnetoX = (MagnetoXRaw*((((asaX-128)*0.5)/128)+1)*196)/(32767.0);;
 	}
 }
 
@@ -328,7 +332,7 @@ void Measure_MY(I2C_HandleTypeDef* i2cHandle,double* MagnetoY){
 
 		int8_t asaY = data[0];
 
-		*MagnetoY = (MagnetoYRaw*((((asaY-128)*0.5)/128)+1)*4912)/(32767.0);
+		*MagnetoY = (MagnetoYRaw*((((asaY-128)*0.5)/128)+1)*196)/(32767.0);
 	}
 }
 
@@ -354,6 +358,6 @@ void Measure_MZ(I2C_HandleTypeDef* i2cHandle,double* MagnetoZ){
 
 		int8_t asaZ = data[0];
 
-		*MagnetoZ = (MagnetoZRaw*((((asaZ-128)*0.5)/128)+1)*4912)/(32767.0);;
+		*MagnetoZ = (MagnetoZRaw*((((asaZ-128)*0.5)/128)+1)*196)/(32767.0);;
 	}
 }
