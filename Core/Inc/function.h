@@ -26,3 +26,6 @@ void Measure_AX(I2C_HandleTypeDef* i2cHandle,double* AccelX);
 void Measure_AY(I2C_HandleTypeDef* i2cHandle,double* AccelY);
 void Measure_AZ(I2C_HandleTypeDef* i2cHandle,double* AccelY);
 void AccelOffSet(void);
+void Measure_MX(I2C_HandleTypeDef* i2cHandle,double* MagnetoX);
+void Measure_MY(I2C_HandleTypeDef* i2cHandle,double* MagnetoY);
+void Measure_MZ(I2C_HandleTypeDef* i2cHandle,double* MagnetoZ);

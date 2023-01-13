@@ -58,9 +58,18 @@ void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 	data[1]=ValueResetBMP;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
 
-	data[0]=0x37;
+	/*Activation du capteur AK8963C*/
+	data[0]=INT_PIN_CFG;
 	data[1]=0x02;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
+
+	data[0]=AK8963_ST1;
+	data[1]=0x1;
+	HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY);
+
+	data[0]=AK8963_CNTL;
+	data[1]=0x16;
+	HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY);
 
 	HAL_Delay(100);
 
@@ -263,5 +272,83 @@ void Measure_GZ(I2C_HandleTypeDef* i2cHandle,double* GyroZ){
 		      }
 		int16_t GyroZRaw = ((data[0]<<8) | data[1]);
 		*GyroZ = ((GyroZRaw)/(32767.0))*GyroSensitivity;
+	}
+}
+
+void Measure_MX(I2C_HandleTypeDef* i2cHandle,double* MagnetoX){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=AK8963_XOUT_L;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+
+		int16_t MagnetoXRaw = ((data[0]<<8) | data[1]);
+
+		data[0]=AK8963_ASAX;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+
+		int8_t asaX = data[0];
+
+		*MagnetoX = (MagnetoXRaw*((((asaX-128)*0.5)/128)+1)*4912)/(32767.0);;
+	}
+}
+
+void Measure_MY(I2C_HandleTypeDef* i2cHandle,double* MagnetoY){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=AK8963_YOUT_L;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+
+		int16_t MagnetoYRaw = ((data[0]<<8) | data[1]);
+
+		data[0]=AK8963_ASAY;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+
+		int8_t asaY = data[0];
+
+		*MagnetoY = (MagnetoYRaw*((((asaY-128)*0.5)/128)+1)*4912)/(32767.0);
+	}
+}
+
+void Measure_MZ(I2C_HandleTypeDef* i2cHandle,double* MagnetoZ){
+	if(i2cHandle->Instance==I2C1){
+		data[0]=AK8963_ZOUT_L;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 2, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+
+		int16_t MagnetoZRaw = ((data[0]<<8) | data[1]);
+
+		data[0]=AK8963_ASAZ;
+		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+	    	  	  Error_Handler();
+			  }
+		if(HAL_I2C_Master_Receive(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
+		    	  Error_Handler();
+		      }
+
+		int8_t asaZ = data[0];
+
+		*MagnetoZ = (MagnetoZRaw*((((asaZ-128)*0.5)/128)+1)*4912)/(32767.0);;
 	}
 }

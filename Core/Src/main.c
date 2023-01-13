@@ -63,6 +63,9 @@ double AccelZ = 0;
 double GyroX = 0;
 double GyroY = 0;
 double GyroZ = 0;
+double MagnetoX = 0;
+double MagnetoY = 0;
+double MagnetoZ = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -225,6 +228,13 @@ int main(void)
         printf("GY %f deg/s\r\n",&GyroY);
       	Measure_GZ(&hi2c1,&GyroZ);
         printf("GZ %f deg/s\r\n",&GyroZ);*/
+
+
+    	/******	Magnetometre ******/
+
+    	/* Test WIA*/
+
+    	/*
     	data[0]=0x00;
   		if(HAL_I2C_Master_Transmit(&hi2c1,MAGNETO_ADD, data, 1, HAL_MAX_DELAY) != HAL_OK){
   	    	  	  Error_Handler();
@@ -234,7 +244,17 @@ int main(void)
   		      }
   		printf("data %x",data[0]);
         printf("\r\n");
-    	HAL_Delay(100);
+        */
+
+      	Measure_MX(&hi2c1,&MagnetoX);
+        printf("MX %f µT \r\n",&MagnetoX);
+      	Measure_MY(&hi2c1,&MagnetoY);
+        printf("MY %f µT \r\n",&MagnetoY);
+      	Measure_MZ(&hi2c1,&MagnetoZ);
+        printf("MZ %f µT \r\n",&MagnetoZ);
+        printf("\r\n");
+    	HAL_Delay(500);
+
       }
   /* USER CODE END 2 */
 
