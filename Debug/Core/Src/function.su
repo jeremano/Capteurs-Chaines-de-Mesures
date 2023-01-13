@@ -4,6 +4,6 @@
 ../Core/Src/function.c:157:6:Measure_AX	32	static
 ../Core/Src/function.c:178:6:Measure_AY	32	static
 ../Core/Src/function.c:199:6:Measure_AZ	32	static
-../Core/Src/function.c:213:6:Measure_GX	32	static
-../Core/Src/function.c:234:6:Measure_GY	32	static
-../Core/Src/function.c:255:6:Measure_GZ	32	static
+../Core/Src/function.c:220:6:Measure_GX	32	static
+../Core/Src/function.c:241:6:Measure_GY	32	static
+../Core/Src/function.c:262:6:Measure_GZ	32	static
