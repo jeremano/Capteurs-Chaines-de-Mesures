@@ -46,8 +46,8 @@ uint8_t data[10];
  */
 void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 
-	  if(i2cHandle->Instance==I2C1)
-	  {
+	if(i2cHandle->Instance==I2C1)
+	{
 	/*!< MPU Reset */
 	data[0]=RegisterResetMPU;
 	data[1]=ValueResetMPU;
@@ -78,11 +78,11 @@ void InitCapteur(I2C_HandleTypeDef* i2cHandle){
 	data[1]=ValueCLKSEL;
 	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
 
-	  }
+	}
 }
 
 /**
- * @brief			: Fonction dDe mesure de la temperature
+ * @brief			: Fonction de mesure de la temperature
  * 					  du capteur MPU
  * @var				: Instance I2C
  * 					  Pointeur vers la variable temperature a modifier
@@ -157,7 +157,7 @@ void AccelOffSet(void){
 }
 
 /**
- * @brief			: Fonction dDe mesure de l'acceleration
+ * @brief			: Fonction de mesure de l'acceleration
  * 					  suivant X du capteur MPU
  * @var				: Instance I2C
  * 					  Pointeur vers la variable acceleration de X a modifier
@@ -178,7 +178,7 @@ void Measure_AX(I2C_HandleTypeDef* i2cHandle,double* AccelX){
 }
 
 /**
- * @brief			: Fonction dDe mesure de l'acceleration
+ * @brief			: Fonction de mesure de l'acceleration
  * 					  suivant Y du capteur MPU
  * @var				: Instance I2C
  * 					  Pointeur vers la variable acceleration de Y a modifier
@@ -199,7 +199,7 @@ void Measure_AY(I2C_HandleTypeDef* i2cHandle,double* AccelY){
 }
 
 /**
- * @brief			: Fonction dDe mesure de l'acceleration
+ * @brief			: Fonction de mesure de l'acceleration
  * 					  suivant Z du capteur MPU
  * @var				: Instance I2C
  * 					  Pointeur vers la variable acceleration de Z a modifier
@@ -219,6 +219,13 @@ void Measure_AZ(I2C_HandleTypeDef* i2cHandle,double* AccelZ){
 	}
 }
 
+/**
+ * @brief			: Fonction de mesure de la rotation
+ * 					  suivant X du capteur MPU
+ * @var				: Instance I2C
+ * 					  Pointeur vers la variable rotation de X a modifier
+ * @retval			: La rotation au travers du pointeur transmis
+ */
 void Measure_GX(I2C_HandleTypeDef* i2cHandle,double* GyroX){
 	if(i2cHandle->Instance==I2C1){
 		data[0]=GYRO_XOUT_H;
@@ -234,11 +241,11 @@ void Measure_GX(I2C_HandleTypeDef* i2cHandle,double* GyroX){
 }
 
 /**
- * @brief			: Fonction dDe mesure de l'acceleration
+ * @brief			: Fonction de mesure de la rotation
  * 					  suivant Y du capteur MPU
  * @var				: Instance I2C
- * 					  Pointeur vers la variable acceleration de Y a modifier
- * @retval			: L'acceleration au travers du pointeur transmis
+ * 					  Pointeur vers la variable rotation de Y a modifier
+ * @retval			: La rotation au travers du pointeur transmis
  */
 void Measure_GY(I2C_HandleTypeDef* i2cHandle,double* GyroY){
 	if(i2cHandle->Instance==I2C1){
@@ -255,11 +262,11 @@ void Measure_GY(I2C_HandleTypeDef* i2cHandle,double* GyroY){
 }
 
 /**
- * @brief			: Fonction dDe mesure de l'acceleration
+ * @brief			: Fonction de mesure de la rotation
  * 					  suivant Z du capteur MPU
  * @var				: Instance I2C
- * 					  Pointeur vers la variable acceleration de Z a modifier
- * @retval			: L'acceleration au travers du pointeur transmis
+ * 					  Pointeur vers la variable rotation de Z a modifier
+ * @retval			: La rotation au travers du pointeur transmis
  */
 void Measure_GZ(I2C_HandleTypeDef* i2cHandle,double* GyroZ){
 	if(i2cHandle->Instance==I2C1){
