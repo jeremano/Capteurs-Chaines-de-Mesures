@@ -382,3 +382,15 @@ void Measure_MZ(I2C_HandleTypeDef* i2cHandle,double* MagnetoZ){
 		*MagnetoZ = (MagnetoZRaw*((((asaZ-128)*0.5)/128)+1)*196)/(32767.0);;
 	}
 }
+
+void Noise_GX(I2C_HandleTypeDef* i2cHandle,double* BruitGX){
+
+}
+
+void Noise_GY(I2C_HandleTypeDef* i2cHandle,double* BruitGY){
+
+}
+
+void Noise_GZ(I2C_HandleTypeDef* i2cHandle,double* BruitGZ){
+
+}

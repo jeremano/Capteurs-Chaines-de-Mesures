@@ -29,3 +29,6 @@ void AccelOffSet(void);
 void Measure_MX(I2C_HandleTypeDef* i2cHandle,double* MagnetoX);
 void Measure_MY(I2C_HandleTypeDef* i2cHandle,double* MagnetoY);
 void Measure_MZ(I2C_HandleTypeDef* i2cHandle,double* MagnetoZ);
+void Noise_GX(I2C_HandleTypeDef* i2cHandle,double* BruitGX);
+void Noise_GY(I2C_HandleTypeDef* i2cHandle,double* BruitGY);
+void Noise_GZ(I2C_HandleTypeDef* i2cHandle,double* BruitGZ);

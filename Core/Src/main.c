@@ -206,15 +206,16 @@ int main(void)
       while (1)
       {
     	/***** Température *****/
-      	/*Measure_T(&hi2c1,&Temp);
-        printf("Temperature : %f\r\n",&Temp);*/
+      	Measure_T(&hi2c1,&Temp);
+        printf("Temperature : %f\r\n",&Temp);
+        printf("\r\n");
 
     	/***** Accélération *****/
 
     	/* sensi 4 g */
     	/*data[0]=ACCEL_CONFIG;
     	data[1]=0b00001000;
-    	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);
+    	HAL_I2C_Master_Transmit(&hi2c1,MPU_ADD, data, 2, HAL_MAX_DELAY);*/
 
     	AccelOffSet();
     	Measure_AX(&hi2c1,&AccelX);
@@ -227,7 +228,7 @@ int main(void)
 		printf("Norme = %f \r\n",Norme);
         printf("\r\n");
         HAL_Delay(500);
-        */
+
 
 
 
@@ -260,7 +261,7 @@ int main(void)
         printf("\r\n");
         */
 
-    	/*
+
       	Measure_MX(&hi2c1,&MagnetoX);
         printf("MX %f µT \r\n",&MagnetoX);
       	Measure_MY(&hi2c1,&MagnetoY);
@@ -270,7 +271,7 @@ int main(void)
         float norme = sqrt(((MagnetoX*MagnetoX)+(MagnetoY*MagnetoY)+(MagnetoZ*MagnetoZ)));
         printf("Norme = %f µT\r\n",norme);
         printf("\r\n");
-    	HAL_Delay(500);*/
+    	HAL_Delay(500);
 
 
       }

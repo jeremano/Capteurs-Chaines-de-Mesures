@@ -7,6 +7,9 @@
 ../Core/Src/function.c:231:6:Measure_GX	32	static
 ../Core/Src/function.c:252:6:Measure_GY	32	static
 ../Core/Src/function.c:273:6:Measure_GZ	32	static
-../Core/Src/function.c:287:6:Measure_MX	40	static
-../Core/Src/function.c:313:6:Measure_MY	40	static
-../Core/Src/function.c:339:6:Measure_MZ	40	static
+../Core/Src/function.c:294:6:Measure_MX	40	static
+../Core/Src/function.c:327:6:Measure_MY	40	static
+../Core/Src/function.c:360:6:Measure_MZ	40	static
+../Core/Src/function.c:386:6:Noise_GX	16	static
+../Core/Src/function.c:390:6:Noise_GY	16	static
+../Core/Src/function.c:394:6:Noise_GZ	16	static
